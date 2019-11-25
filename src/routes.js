@@ -2,16 +2,30 @@ import Login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
-import Table from './views/nav1/Table.vue'
-import Form from './views/nav1/Form.vue'
-import user from './views/nav1/user.vue'
-import Page4 from './views/nav2/Page4.vue'
-import Page5 from './views/nav2/Page5.vue'
-import Page6 from './views/nav3/Page6.vue'
-import echarts from './views/charts/echarts.vue'
+import ShopHome from './views/shop/shophome.vue'
+import ShopInfo from './views/shop/shopinfo.vue'
+import Survey from './views/shop/survey.vue'
+import CommodityList from './views/commodity/commoditylist.vue'
+import AddCommodity from './views/commodity/addcommodity.vue'
+import SetLabel from './views/commodity/setLabel.vue'
+import Comment from './views/commodity/comment.vue'
+import ConsultRecord from './views/commodity/consultRecord.vue'
+import addFremb from './views/commodity/addfremb.vue'
+import Order from './views/order/Order.vue'
+import CoupleList from './views/markting/coupleList.vue'
+import Activity from './views/markting/activity.vue'
+import Account from './views/assets/account.vue'
+import AccountDetail from './views/assets/accountdetail.vue'
+import CircleInfo from './views/circle/circleinfo.vue'
+import SetCircle from './views/circle/setcircle.vue'
+import Briefing from './views/data/briefing.vue'
+import OrderStatic from './views/data/orderstatic.vue'
+import CancelRate from './views/data/cancelrate.vue'
+import CommodityRank from './views/data/commodityrank.vue'
+import ExpandStatic from './views/data/expandstatic.vue'
+import Distibution from './views/data/distibution.vue'
 
-let routes = [
-    {
+let routes = [{
         path: '/login',
         component: Login,
         name: '',
@@ -23,46 +37,83 @@ let routes = [
         name: '',
         hidden: true
     },
-    //{ path: '/main', component: Main },
     {
         path: '/',
         component: Home,
-        name: '导航一',
-        iconCls: 'el-icon-message',//图标样式class
+        name: '店铺管理',
+        iconCls: 'el-icon-message', //图标样式class
         children: [
             { path: '/main', component: Main, name: '主页', hidden: true },
-            { path: '/table', component: Table, name: 'Table' },
-            { path: '/form', component: Form, name: 'Form' },
-            { path: '/user', component: user, name: '列表' },
+            { path: '/survey', component: Survey, name: '店铺概况' },
+            { path: '/shophome', component: ShopHome, name: '店铺主页' },
+            { path: '/shopinfo', component: ShopInfo, name: '店铺信息' },
         ]
     },
     {
         path: '/',
         component: Home,
-        name: '导航二',
+        name: '商品管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/page4', component: Page4, name: '页面4' },
-            { path: '/page5', component: Page5, name: '页面5' }
+            { path: '/commoditylist', component: CommodityList, name: '商品列表' },
+            { path: '/addcommodity', component: AddCommodity, name: '创建新品' },
+            { path: '/label', component: SetLabel, name: '标签管理' },
+            { path: '/comment', component: Comment, name: '商品评论' },
+            { path: '/consult', component: ConsultRecord, name: '咨询记录' },
+            { path: '/addcommodity/addfremb', component: addFremb, name: '模板设置', hidden: true },
         ]
     },
     {
         path: '/',
         component: Home,
-        name: '',
+        name: '订单管理',
         iconCls: 'fa fa-address-card',
-        leaf: true,//只有一个节点
         children: [
-            { path: '/page6', component: Page6, name: '导航三' }
+            { path: '/order', component: Order, name: '订单查询' }
         ]
     },
     {
         path: '/',
         component: Home,
-        name: 'Charts',
+        name: '营销管理',
         iconCls: 'fa fa-bar-chart',
         children: [
-            { path: '/echarts', component: echarts, name: 'echarts' }
+            { path: '/couple', component: CoupleList, name: '优惠券列表' },
+            { path: '/activity', component: Activity, name: '满减活动' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '资产管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/account', component: Account, name: '账户总览' },
+            { path: '/accountdetail', component: AccountDetail, name: '账单明细' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '数据管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/briefing', component: Briefing, name: '经营简报' },
+            { path: '/orderstatic', component: OrderStatic, name: '订单统计' },
+            { path: '/cancelrate', component: CancelRate, name: '复消率' },
+            { path: '/commodityrand', component: CommodityRank, name: '商品排行' },
+            { path: '/expandstatic', component: ExpandStatic, name: '客户增长统计' },
+            { path: '/distibution', component: Distibution, name: '客户分布' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '商圈管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/circleinfo', component: CircleInfo, name: '商圈信息' },
+            { path: '/setcircle', component: SetCircle, name: '商圈设置' },
         ]
     },
     {
