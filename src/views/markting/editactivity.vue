@@ -113,6 +113,9 @@
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">选取加入</el-button>
                     </template>
                 </el-table-column>
+                <el-table-column type="selecotno">
+                    <el-button size="small" @click="small"></el-button>
+                </el-table-column>
             </el-table>
 
             <!--工具条-->
@@ -181,22 +184,11 @@ export default {
             // this.tableData2.pop();
         },
         handSave(index,rows){
-            console.log(rows);
             rows[0].disabled = false;
-            
         },
         handleCurrentChange(){},
-        selsChange(){},
-        cals(){
-            if(this.tableData2.length==0){
-                this.tableData2.push({
-                    rows
-                })
-            }
-        },
-        selsChange(){
-            this.tableData2.length == 0
-        }
+        selsChange(){}
+        
     }
 };
 </script>
