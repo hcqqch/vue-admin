@@ -58,7 +58,6 @@ body {
 	}
 }
 
-
 .fade-enter-active,
 .fade-leave-active {
 	transition: all .2s ease;

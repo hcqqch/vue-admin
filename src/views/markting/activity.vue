@@ -1,4 +1,5 @@
 <template>
+<!-- 满减活动 -->
     <section>
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
@@ -40,7 +41,7 @@
             <el-radio-button label="1">未开始</el-radio-button>
             <el-radio-button label="2">已结束</el-radio-button>
         </el-radio-group>
-       <el-button class="addCouponBtn" type="primary">新增活动</el-button>
+       <el-button class="addCouponBtn" @click="addActivity" type="primary">新增活动</el-button>
         <el-table
             :data="data"
             highlight-current-row
@@ -182,6 +183,9 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
             this.getdata();
+        },
+        addActivity(){
+            this.$router.push('./editactivity');
         }
     },
     mounted() {}

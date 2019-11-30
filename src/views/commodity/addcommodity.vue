@@ -1,9 +1,18 @@
 <template>
     <!-- 创建新品 -->
-    <section style="padding:20px">
+    <section style="padding:20px;position:relative">
         <div class="infoItem">基本信息</div>
-        <el-form class ref="form" :model="form" label-width="100px">
+        <el-form class ref="form" :model="form" label-width="120px">
             <el-form-item label="商品分类">
+                <el-cascader
+                    style="width:100%"
+                    v-model="type"
+                    :options="options"
+                    :props="{ expandTrigger: 'hover' }"
+                    @change="handleChange"
+                ></el-cascader>
+            </el-form-item>
+            <el-form-item label="店铺内商品分类">
                 <el-cascader
                     style="width:100%"
                     v-model="type"
@@ -80,6 +89,9 @@
 
             <!-- 其他信息 -->
             <div class="infoItem">其他信息</div>
+            <el-form-item style="width:900px" label="商品说明">
+                <el-input type="textarea" v-model="textarea" maxlength="30" show-word-limit></el-input>
+            </el-form-item>
             <el-form-item style="width:900px" label="上架时间">
                 <el-radio v-model="radio" label="立即上架售卖">立即上架售卖</el-radio>
                 <br />
@@ -109,10 +121,11 @@
                                 :value="item.value"
                             ></el-option>
                         </el-select>
+
                         <el-input style="width:140px;" v-model="limitNum2" placeholder="请输入数量"></el-input>件
                     </div>
                 </div>
-                
+
                 <el-checkbox v-model="limitBuyChecked2">只允许圈内用户购买</el-checkbox>
             </el-form-item>
             <el-form-item style="width:900px" label="分享佣金设置">
@@ -129,6 +142,10 @@
                 <br />
             </el-form-item>
         </el-form>
+        <div class="footerBtn">
+            <el-button type="primary">保存到仓库</el-button>
+            <el-button type="primary">发布该商品</el-button>
+        </div>
     </section>
 </template>
 
@@ -140,6 +157,7 @@ export default {
         return {
             form: {},
             type: [],
+            textarea:"",//商品描述
             radio: "",
             num: 1,
             options: [
@@ -240,10 +258,10 @@ export default {
         handleChange() {},
         // 修改统一运费
         changeFreight() {},
-         // 新建运费模板
-        addFremb(){
-            this.$router.push('/addcommodity/addfremb');
-        },
+        // 新建运费模板
+        addFremb() {
+            this.$router.push("/addcommodity/addfremb");
+        }
     },
     components: {
         SkuWrap: resolve => {
@@ -254,7 +272,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .el-form-item {
     width: 450px;
 }
@@ -264,5 +282,12 @@ export default {
     padding: 10px;
     background: #f2f2f2;
     margin-bottom: 20px;
+}
+.footerBtn{
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    /* background: #f2f2f2; */
+    text-align: center;
 }
 </style>

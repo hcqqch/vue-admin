@@ -211,7 +211,7 @@ export default {
     }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .infoItem {
     width: 99%;
     padding: 10px;

@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { requestLogin } from "../api/api";
+// import { requestLogin } from "../api/api";
 import SliderVerificationCode from "slider-verification-code";
 import "slider-verification-code/lib/slider-verification-code.css";
 import Vue from "vue";
@@ -91,45 +91,50 @@ export default {
     },
     methods: {
         handleSubmit2(ev) {
-            var _this = this;
-            this.$refs.ruleForm2.validate(valid => {
-                if (valid) {
-                    if (this.slideValue == false) {
-                        this.$message("您没有通过验证");
-                        return false;
-                    }
-                    //_this.$router.replace('/table');
-                    this.logining = true;
-                    var loginParams = {
-                        username: this.ruleForm2.account,
-                        password: this.ruleForm2.checkPass
-                    };
-                    requestLogin(loginParams).then(data => {
-                        this.logining = false;
-                        //NProgress.done();
-                        let { msg, code, user } = data;
-                        if (code !== 200) {
-                            this.$message({
-                                message: msg,
-                                type: "error"
-                            });
-                        } else {
-                            sessionStorage.setItem(
-                                "user",
-                                JSON.stringify(user)
-                            );
-                            this.$router.push({ path: "/survey" });
-                        }
-                    });
-                } else {
-                    console.log("error submit!!");
-                    return false;
-                }
-            });
+            // console.log(this.$router)
+            // this.$router.push({ path: "/survey" });
+            this.$router.replace('/survey');
+            // return false;
+            // var _this = this;
+            // this.$refs.ruleForm2.validate(valid => {
+            //     if (valid) {
+            //         if (this.slideValue == false) {
+            //             this.$message("您没有通过验证");
+            //             return false;
+            //         }
+            //         //_this.$router.replace('/table');
+            //         this.logining = true;
+            //         var loginParams = {
+            //             username: this.ruleForm2.account,
+            //             password: this.ruleForm2.checkPass
+            //         };
+            //         // this.$router.push({ path: "/survey" });
+            //         requestLogin(loginParams).then(data => {
+            //             this.logining = false;
+            //             //NProgress.done();
+            //             let { msg, code, user } = data;
+            //             if (code !== 200) {
+            //                 this.$message({
+            //                     message: msg,
+            //                     type: "error"
+            //                 });
+            //             } else {
+            //                 sessionStorage.setItem(
+            //                     "user",
+            //                     JSON.stringify(user)
+            //                 );
+            //                 this.$router.push({ path: "/survey" });
+            //             }
+            //         });
+            //     } else {
+            //         console.log("error submit!!");
+            //         return false;
+            //     }
+            // });
         },
         // 点击切换二维码显示
         showCode() {
-			this.isShow = !this.isShow;
+            this.isShow = !this.isShow;
 		}
     }
 };

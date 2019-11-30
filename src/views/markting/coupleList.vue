@@ -1,4 +1,5 @@
 <template>
+<!-- 优惠券列表 -->
     <section>
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
@@ -64,7 +65,7 @@
             <el-radio-button label="2">领取使用记录</el-radio-button>
             <el-radio-button label="3">回收站</el-radio-button>
         </el-radio-group>
-       <el-button class="addCouponBtn" type="primary">新增优惠券</el-button>
+       <el-button class="addCouponBtn" @click="addCoupon" type="primary">新增优惠券</el-button>
         <el-table
             :data="data"
             highlight-current-row
@@ -207,6 +208,9 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
             this.getdata();
+        },
+        addCoupon(){
+           this.$router.push('/editcoupon');
         }
     },
     mounted() {}

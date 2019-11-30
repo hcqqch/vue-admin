@@ -1,8 +1,8 @@
 <template>
-<!-- 可编辑表格 -->
+    <!-- 可编辑表格 -->
     <div id="this">
         <el-row>
-            <el-col span="24">
+            <el-col :span="24">
                 <el-table
                     size="mini"
                     :data="master_user.data"
@@ -51,7 +51,7 @@
                     </el-table-column>
                 </el-table>
             </el-col>
-            <el-col span="24">
+            <el-col :span="24">
                 <div class="el-table-add-row" style="width: 99.2%;" @click="addMasterUser()">
                     <span>+ 添加</span>
                 </div>
@@ -62,13 +62,13 @@
 
 <script>
 export default {
-    name:"edittable",
+    name: "edittable",
     data() {
         return {
             master_user: {
                 sel: null, //选中行
                 columns: [
-                    { field: "type", title: "区域", width: 120 },
+                    { field: "type", title: "可配送区域", width: 120 },
                     { field: "addport", title: "首重", width: 150 },
                     { field: "user", title: "运费", width: 120 },
                     { field: "pwd", title: "续重", width: 220 },
@@ -104,6 +104,10 @@ export default {
                 _temporary: true
             };
             this.master_user.data.push(j);
+
+            this.master_user.data.push(g);
+            if (this.master.user.data < 10) {
+            }
             this.master_user.sel = JSON.parse(JSON.stringify(j));
         },
         //修改
@@ -134,6 +138,7 @@ export default {
                     //然后这边重新读取表格数据
                     this.readMasterUser();
                     row.isSet = false;
+                    // vm.$message = console.log(this.columns)
                 })();
             } else {
                 this.master_user.sel = JSON.parse(JSON.stringify(row));

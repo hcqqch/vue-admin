@@ -1,7 +1,7 @@
 <template>
-    <!-- 客户增长统计 -->
+    <!-- 操作日志 -->
     <section style="padding:20px">
-        <div class="infoItem">客户增长统计</div>
+        <div class="infoItem">操作日志</div>
         <el-row>
             <el-col :span="24">
                 操作时间：
@@ -18,15 +18,44 @@
                 <el-button type="primary">查询</el-button>
             </el-col>
         </el-row>
-        <el-row style="margin-top:20px">
-            <el-col :span="24">
-                <div id="chartLine" style="width:100%; height:500px;"></div>
-            </el-col>
-        </el-row>
+                <el-table
+            :data="data"
+            highlight-current-row
+            v-loading="listLoading"
+            @selection-change="selsChange"
+            style="width: 100%;"
+        >
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column prop="num" label="用户" width="" sortable></el-table-column>
+            <el-table-column prop="createtime" label="IP地址" width="" sortable></el-table-column>
+            <el-table-column prop="name" label="详情" width="" sortable></el-table-column>
+            <el-table-column prop="price" label="操作时间" width="" sortable></el-table-column>
+            <el-table-column label="操作" width="">
+                <template scope="scope"> 
+                    <el-button
+                        size="small"
+                        type="danger"
+                        @click="handleDel(scope.$index, scope.row)"
+                    >删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!--工具条-->
+        <el-col :span="24" class="toolbar">
+            <el-button type="">批量删除</el-button>
+            <el-button type="">清空日志</el-button>
+            <el-pagination
+                layout="prev, pager, next"
+                @current-change="handleCurrentChange"
+                :page-size="20"
+                :total="total"
+                style="float:right;"
+            ></el-pagination>
+        </el-col>
     </section>
 </template>
 <script>
-import echarts from "echarts";
 export default {
     data() {
         return {
@@ -64,72 +93,14 @@ export default {
                     address: "1 1518 弄"
                 }
             ],
-            chartLine: {},
-            chartLine2: {},
-            options: [
-                {
-                    value: "选项1",
-                    label: "top10"
-                },
-                {
-                    value: "选项2",
-                    label: "top20"
-                }
-            ],
             value: ""
         };
     },
     methods: {
-        drawLineChart() {
-            this.chartLine = echarts.init(document.getElementById("chartLine"));
-            this.chartLine.setOption({
-                title: {
-                    text: "本周数据"
-                },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: ["新增会员数"]
-                },
-                grid: {
-                    left: "3%",
-                    right: "4%",
-                    bottom: "3%",
-                    containLabel: true
-                },
-                xAxis: {
-                    type: "category",
-                    boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
-                },
-                yAxis: {
-                    type: "value"
-                },
-                series: [
-                    {
-                        name: "新增会员数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    }
-                ]
-            });
-        },
+
     },
     mounted() {
-        this.drawLineChart();
-    },
-    updated() {
-        this.drawLineChart();
+        
     }
 };
 </script>

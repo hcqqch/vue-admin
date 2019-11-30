@@ -1,6 +1,8 @@
 <template>
 <!-- 店铺主页 -->
-    <el-form class="shopInfo" ref="form" :model="form" label-width="120px">
+<section style="padding:20px">
+       <el-form class="shopInfo" ref="form" :model="form" label-width="120px">
+        <div class="infoItem">店铺主页</div>
         <el-form-item label="店铺banner图:">
             <el-upload
                 class="avatar-uploader"
@@ -35,6 +37,7 @@
             <el-button>取消</el-button>
         </el-form-item>
     </el-form>
+</section>
 </template>
 
 <script>
@@ -50,7 +53,7 @@ export default {
                 desc: ""
             }
         };
-    },
+    }, 
     methods: {
         handleAvatarSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
@@ -73,6 +76,15 @@ export default {
 
 <style lang="scss" scoped>
 .shopInfo {
+    .infoItem {
+        width: 99%;
+        padding: 10px;
+        background: #f2f2f2;
+        margin-bottom: 20px;
+    }
+    .el-form-item{
+        width: 450px;
+    }
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;

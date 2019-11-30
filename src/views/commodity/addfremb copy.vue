@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style scoped>
-.el-form-item {
+/* .el-form-item {
     width: 450px;
-}
+} */
 </style>

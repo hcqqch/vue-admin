@@ -7,13 +7,17 @@ import ShopInfo from './views/shop/shopinfo.vue'
 import Survey from './views/shop/survey.vue'
 import CommodityList from './views/commodity/commoditylist.vue'
 import AddCommodity from './views/commodity/addcommodity.vue'
+import Classification from './views/commodity/classification.vue'
 import SetLabel from './views/commodity/setLabel.vue'
 import Comment from './views/commodity/comment.vue'
 import ConsultRecord from './views/commodity/consultRecord.vue'
 import addFremb from './views/commodity/addfremb.vue'
+import CustomClassify from './views/commodity/customclassify.vue'
 import Order from './views/order/Order.vue'
 import CoupleList from './views/markting/coupleList.vue'
+import EditCoupon from './views/markting/editcoupon.vue'
 import Activity from './views/markting/activity.vue'
+import EditActivity from './views/markting/editactivity.vue'
 import Account from './views/assets/account.vue'
 import AccountDetail from './views/assets/accountdetail.vue'
 import CircleInfo from './views/circle/circleinfo.vue'
@@ -24,6 +28,11 @@ import CancelRate from './views/data/cancelrate.vue'
 import CommodityRank from './views/data/commodityrank.vue'
 import ExpandStatic from './views/data/expandstatic.vue'
 import Distibution from './views/data/distibution.vue'
+import ShopSetting from './views/setting/shopsetting.vue'
+import SelfInfomation from './views/setting/selfinfomation.vue'
+import DeptManager from './views/setting/deptmanager.vue'
+import PersonManage from './views/setting/personmanage.vue'
+import OperationLog from './views/setting/operationlog.vue'
 
 let routes = [{
         path: '/login',
@@ -45,8 +54,8 @@ let routes = [{
         children: [
             { path: '/main', component: Main, name: '主页', hidden: true },
             { path: '/survey', component: Survey, name: '店铺概况' },
-            { path: '/shophome', component: ShopHome, name: '店铺主页' },
             { path: '/shopinfo', component: ShopInfo, name: '店铺信息' },
+            { path: '/shophome', component: ShopHome, name: '店铺主页' },
         ]
     },
     {
@@ -57,10 +66,12 @@ let routes = [{
         children: [
             { path: '/commoditylist', component: CommodityList, name: '商品列表' },
             { path: '/addcommodity', component: AddCommodity, name: '创建新品' },
+            { path: '/classification', component: Classification, name: '分类规格' },
             { path: '/label', component: SetLabel, name: '标签管理' },
             { path: '/comment', component: Comment, name: '商品评论' },
             { path: '/consult', component: ConsultRecord, name: '咨询记录' },
             { path: '/addcommodity/addfremb', component: addFremb, name: '模板设置', hidden: true },
+            { path: '/customclassify', component: CustomClassify, name: '店铺自定义分类' },
         ]
     },
     {
@@ -79,7 +90,9 @@ let routes = [{
         iconCls: 'fa fa-bar-chart',
         children: [
             { path: '/couple', component: CoupleList, name: '优惠券列表' },
+            { path: '/editcoupon/', component: EditCoupon, name: '新增优惠券', hidden: true },
             { path: '/activity', component: Activity, name: '满减活动' },
+            { path: '/editactivity/', component: EditActivity, name: '新增活动', hidden: true },
         ]
     },
     {
@@ -104,6 +117,19 @@ let routes = [{
             { path: '/commodityrand', component: CommodityRank, name: '商品排行' },
             { path: '/expandstatic', component: ExpandStatic, name: '客户增长统计' },
             { path: '/distibution', component: Distibution, name: '客户分布' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '设置管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/shopsetting/', component: ShopSetting, name: '店铺设置' },
+            { path: '/selfinfomation', component: SelfInfomation, name: '个人信息' },
+            { path: '/deptmanage', component: DeptManager, name: '部门管理' },
+            { path: '/personmanage', component: PersonManage, name: '人员管理' },
+            { path: '/operationlog', component: OperationLog, name: '操作日志' },
         ]
     },
     {
