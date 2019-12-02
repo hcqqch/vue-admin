@@ -8,7 +8,7 @@
         label-width="0px"
         class="demo-ruleForm login-container"
     >
-        <img @click="showCode" class="code-login" src="../assets/code.png" alt="二维码登录" />
+        <img @click="showCode" class="code-login" src="../assets/code.png" alt="切换登录" title="切换登录方式" />
         <h3 class="title">圈助商户管理平台</h3>
         <div v-show="isShow">
             <el-form-item prop="account">
@@ -19,15 +19,15 @@
                     placeholder="请输入用户名"
                 ></el-input>
             </el-form-item>
-            <el-form-item>
-                <el-select v-model="ruleForm2.region" placeholder="请选择店铺">
-                    <el-option label="店铺1" value="owner"></el-option>
+            <el-form-item prop="shop">
+                <el-select v-model="ruleForm2.shop_id" placeholder="请选择店铺">
+                    <!-- <el-option label="店铺1" value="owner"></el-option>
                     <el-option label="店铺2" value="service"></el-option>
-                    <el-option label="店铺3" value="admin"></el-option>
+                    <el-option label="店铺3" value="admin"></el-option> -->
                 </el-select>
             </el-form-item>
-            <el-form-item>
-                <el-select v-model="ruleForm2.region" placeholder="请选择您的身份">
+            <el-form-item prop="identity">
+                <el-select v-model="ruleForm2.account_id" placeholder="请选择您的身份">
                     <el-option label="店主" value="owner"></el-option>
                     <el-option label="客服" value="service"></el-option>
                     <el-option label="管理员" value="admin"></el-option>
@@ -65,6 +65,7 @@
 import SliderVerificationCode from "slider-verification-code";
 import "slider-verification-code/lib/slider-verification-code.css";
 import Vue from "vue";
+import { requestLogin } from '../api/api';
 Vue.use(SliderVerificationCode);
 export default {
     data() {
@@ -72,28 +73,35 @@ export default {
             logining: false,
             ruleForm2: {
                 account: "",
-                checkPass: ""
+				checkPass: "",
+				shop_id:"",
+				account_id:""
             },
             rules2: {
                 account: [
                     { required: true, message: "请输入用户名", trigger: "blur" }
-                    //{ validator: validaePass }
+				],
+				shop: [
+                    { required: true, message: "请选择店铺", trigger: "change" }
+				],
+				identity: [
+                    { required: true, message: "请选择您的身份", trigger: "change" }
                 ],
                 checkPass: [
                     { required: true, message: "请输入密码", trigger: "blur" }
-                    //{ validator: validaePass2 }
                 ]
             },
-            checked: true,
             slideValue: false,
             isShow: true
         };
     },
     methods: {
         handleSubmit2(ev) {
-            // console.log(this.$router)
-            // this.$router.push({ path: "/survey" });
-            this.$router.replace('/survey');
+			const params = this.ruleForm2
+			requestLogin(params).then((res)=>{
+
+			})
+            this.$router.push("/survey");
             // return false;
             // var _this = this;
             // this.$refs.ruleForm2.validate(valid => {
@@ -134,9 +142,14 @@ export default {
         },
         // 点击切换二维码显示
         showCode() {
-            this.isShow = !this.isShow;
-		}
-    }
+			this.isShow = !this.isShow;
+			// this.isShow = !this.isShow;
+			
+        }
+	},
+	mounted() {
+		
+	},
 };
 </script>
 
@@ -167,6 +180,8 @@ export default {
     }
     .code-login {
         position: absolute;
+        width: 20px;
+        height: 20px;
         right: 20px;
         top: 20px;
         cursor: pointer;

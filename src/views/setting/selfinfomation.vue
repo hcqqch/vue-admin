@@ -2,38 +2,27 @@
     <!-- 个人信息 -->
     <section style="padding:20px">
         <div class="infoItem">个人信息</div>
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="form" label-width="120px">
             <el-form-item label="用户名">
                 <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="营业时间">
-                <el-radio-group v-model="form.resource">
-                    <el-radio label="全天"></el-radio>
-                    <el-radio label="自定义"></el-radio>
-                </el-radio-group>
+            <el-form-item label="所属部门">
+                <el-select></el-select>
             </el-form-item>
-            <el-form-item label="下单门槛">
-                <el-radio-group v-model="form.resource">
-                    <el-radio label="全部用户可以购买"></el-radio>
-                    <el-radio label="仅圈内用户可以购买"></el-radio>
-                </el-radio-group>
+            <el-form-item label="联系电话">
+                <el-input style="width:77%"></el-input>
+                <el-button>更换</el-button>
             </el-form-item>
-            <el-form-item label="售罄商品">
-                <el-radio-group v-model="form.resource">
-                    <el-radio label="展示"></el-radio>
-                    <el-radio label="不展示"></el-radio>
-                </el-radio-group>
+            <el-form-item label="创建日期">
+                <el-date-picker v-model="value1" type="datetime" placeholder="选择日期时间"></el-date-picker>
             </el-form-item>
-            <el-form-item label="发货地址">
-                <el-cascader
-                    v-model="type"
-                    :options="options"
-                    :props="{ expandTrigger: 'hover' }"
-                    @change="handleChange"
-                ></el-cascader>
+            <el-form-item label="密码">
+                <el-input style="width:77%"></el-input>
+                <el-button>修改</el-button>
             </el-form-item>
-            <el-form-item label="详细地址">
-                <el-input v-model="form.address" placeholder="请输入详细地址"></el-input>
+            <el-form-item label="绑定圈助账号">
+                <el-input style="width:77%" v-model="form.address" placeholder></el-input>
+                <el-button>绑定</el-button>
             </el-form-item>
         </el-form>
     </section>
@@ -43,7 +32,7 @@ export default {
     data() {
         return {
             form: {
-                address:""
+                address: ""
             },
             resource: "",
             options: [
@@ -102,7 +91,8 @@ export default {
                         }
                     ]
                 }
-            ]
+            ],
+            value1:""
         };
     },
     methods: {
@@ -112,7 +102,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.el-form-item{
+.el-form-item {
     width: 450px;
 }
 .infoItem {

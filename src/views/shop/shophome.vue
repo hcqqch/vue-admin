@@ -6,7 +6,8 @@
         <el-form-item label="店铺banner图:">
             <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="http://up.qiniup.com"
+                :data="qiniuData"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
@@ -17,7 +18,7 @@
             </el-upload>
         </el-form-item>
         <el-form-item label="店铺活动模块">
-            <el-input v-model="form.name"></el-input>
+            <el-input v-model="name"></el-input>
         </el-form-item>
         <el-form-item label="店铺优惠券显示">
 			<el-switch
@@ -30,7 +31,7 @@
 			</el-switch>
         </el-form-item>
         <el-form-item label="店铺底部说明">
-            <el-input type="textarea" v-model="form.desc"></el-input>
+            <el-input type="textarea" v-model="desc"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -41,36 +42,82 @@
 </template>
 
 <script>
+import { submitHomepageinfo } from "../../api/api";
+import axios from "axios";
+import qs from "qs";
 export default {
     data() {
         return {
 			isCoupon:true,//是否显示优惠券
 			isCircle:true,//是否显示商圈
             imageUrl: "",
-            form: {
-                name: "",
-                phone: "",
-                desc: ""
-            }
+            name:"",
+            desc:"",
+            upload_qiniu_url: "http://up.qiniup.com",
+            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            qiniuData: { key: "", token: "" },
+            imageUrl: "",
+            Global: {
+                dataUrl: "http://office.pintaihui.cn"
+            },
         };
     }, 
     methods: {
-        handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
+        getQiniuToken: function() {
+            const _this = this;
+            axios
+                .post(this.Global.dataUrl + "/api/v1/qiniu/token")
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data) {
+                        console.log(res.data.token);
+                        _this.qiniuData.token = res.data.data.token;
+                    } else {
+                        _this.$message({
+                            message: res.data.msg,
+                            duration: 2000,
+                            type: "warning"
+                        });
+                    }
+                });
         },
-        beforeAvatarUpload(file) {
+        beforeAvatarUpload: function(file) {
+            console.log(file.name);
+            this.qiniuData.key = file.name;
             const isJPG = file.type === "image/jpeg";
+            const isPNG = file.type === "image/png";
             const isLt2M = file.size / 1024 / 1024 < 2;
-            if (!isJPG) {
-                this.$message.error("上传头像图片只能是 JPG 格式!");
+            if (!isJPG && !isPNG) {
+                this.$message.error("图片只能是 JPG/PNG 格式!");
+                return false;
             }
             if (!isLt2M) {
-                this.$message.error("上传头像图片大小不能超过 2MB!");
+                this.$message.error("图片大小不能超过 2MB!");
+                return false;
             }
-            return isJPG && isLt2M;
         },
-        onSubmit() {}
-    }
+        handleAvatarSuccess: function(res, file) {
+            console.log(res.key);
+            this.imageUrl = this.upload_qiniu_addr + res.key;
+            console.log(this.imageUrl);
+        },
+        handleError: function(res) {
+            this.$message({
+                message: "上传失败",
+                duration: 2000,
+                type: "warning"
+            });
+        },
+        onSubmit() {
+            submitHomepageinfo().then().catch()
+        }
+    },
+    created() {
+        this.getQiniuToken();
+    },
+    mounted() {
+        
+    },
 };
 </script>
 

@@ -6,7 +6,8 @@
             <el-form-item label="店铺logo:">
                 <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="http://up.qiniup.com"
+                    :data="qiniuData"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload"
@@ -32,8 +33,7 @@
                 </template>
             </el-form-item>
             <el-form-item label="店铺链接">
-                <!-- <el-input v-model="form.link"></el-input> -->
-                <el-input :disabled="true"></el-input>
+                <el-input v-model="link" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="店铺介绍">
                 <el-input type="textarea" v-model="form.description"></el-input>
@@ -43,15 +43,41 @@
                 <el-button>取消</el-button>
             </el-form-item>
             <div class="infoItem">店铺资料</div>
-            <div style="padding:10px">店铺类型：美食</div>
-            <div style="padding:10px">店铺归属地：安徽省鞍山市花山区</div>
-            <div class="demo-image__preview">
-                相关证件
-                <el-image
-                    style="width: 100px; height: 100px"
-                    :src="url"
-                    :preview-src-list="srcList"
-                ></el-image>
+            <div style="padding:10px">
+                店铺类型：
+                <span>{{typeName}}</span>
+            </div>
+            <div style="padding:10px">
+                店铺归属地：
+                <span>{{belongArea}}</span>
+            </div>
+            <div style="padding:10px" class="demo-image__preview">
+                <div>相关证件:</div>
+                <div class="flex-wrap">
+                    <div class="img-wrap">
+                        <span class="img-title">营业执照</span>
+                        <el-image style="width: 200px; height: 150px" :src="url1" :fit="fit"></el-image>
+                    </div>
+
+                    <div class="img-wrap">
+                        <span class="img-title">法人身份证正面</span>
+                        <el-image style="width: 200px; height: 150px" :src="url2" :fit="fit"></el-image>
+                    </div>
+                    <div class="img-wrap">
+                        <span class="img-title">法人身份证反面</span>
+                        <el-image style="width: 200px; height: 150px" :src="url3" :fit="fit"></el-image>
+                    </div>
+                    <div class="img-wrap">
+                        <span class="img-title">法人手持身份证</span>
+                        <el-image style="width: 200px; height: 150px" :src="url4" :fit="fit"></el-image>
+                    </div>
+                </div>
+                <div class="flex-wrap">
+                    <div class="img-wrap" v-for="(item,i) in items" :key="i">
+                        <span class="img-title">其他资质</span>
+                        <el-image style="width: 200px; height: 150px" :src="items[i]" :fit="fit"></el-image>
+                    </div>
+                </div>
             </div>
         </el-form>
     </section>
@@ -60,49 +86,98 @@
 <script>
 import { getInformation, submitInformation } from "../../api/api";
 import axios from "axios";
+import qs from "qs";
 
 export default {
     data() {
         return {
-            imageUrl: "",
             form: {
-                logo:"",
+                logo: "",
                 name: "",
                 mobile: "",
                 description: ""
             },
+            link: "",
+            upload_qiniu_url: "http://up.qiniup.com",
+            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            qiniuData: { key: "", token: "" },
+            imageUrl: "",
+            Global: {
+                dataUrl: "http://office.pintaihui.cn"
+            },
             isPhoneNum2: false,
-            url:
-                "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-            srcList: [
-                "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
-                "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg"
-            ]
+            typeName: "", //店铺类型
+            belongArea: "", //店铺归属地
+            url1: "",
+            url2: "",
+            url3: "",
+            url4: "",
+            fit: "scale-down",
+            items: [] //其他资质证明
         };
     },
     methods: {
-        handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
+        getQiniuToken: function() {
+            const _this = this;
+            axios
+                .post(this.Global.dataUrl + "/api/v1/qiniu/token")
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data) {
+                        console.log(res.data.token);
+                        _this.qiniuData.token = res.data.data.token;
+                    } else {
+                        _this.$message({
+                            message: res.data.msg,
+                            duration: 2000,
+                            type: "warning"
+                        });
+                    }
+                });
         },
-        beforeAvatarUpload(file) {
+        beforeAvatarUpload: function(file) {
+            console.log(file.name);
+            this.qiniuData.key = file.name;
             const isJPG = file.type === "image/jpeg";
+            const isPNG = file.type === "image/png";
             const isLt2M = file.size / 1024 / 1024 < 2;
-            if (!isJPG) {
-                this.$message.error("上传头像图片只能是 JPG 格式!");
+            if (!isJPG && !isPNG) {
+                this.$message.error("图片只能是 JPG/PNG 格式!");
+                return false;
             }
             if (!isLt2M) {
-                this.$message.error("上传头像图片大小不能超过 2MB!");
+                this.$message.error("图片大小不能超过 2MB!");
+                return false;
             }
-            return isJPG && isLt2M;
+        },
+        handleAvatarSuccess: function(res, file) {
+            console.log(res.key);
+            this.imageUrl = this.upload_qiniu_addr + res.key;
+            console.log(this.imageUrl);
+        },
+        handleError: function(res) {
+            this.$message({
+                message: "上传失败",
+                duration: 2000,
+                type: "warning"
+            });
         },
         onSubmit() {
-            // const  params  = JSON.parse(JSON.stringify(this.form))
-            // // console.log(JSON.parse(this.form));
-            // console.log(params)
-            const params = this.form;
-            console.log(params);
-            submitInformation(params).then(data => {
-                console.log(data.data);
+            const params = {
+                logo: this.imageUrl,
+                name: this.form.name,
+                mobile: this.form.mobile,
+                description: this.form.description
+            };
+            let config = {
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded;charset=UTF-8"
+                }
+            };
+            console.log(qs.stringify(params));
+            submitInformation(qs.stringify(params), config).then(res => {
+                console.log(res);
             });
         },
         // 添加号码
@@ -113,9 +188,20 @@ export default {
             this.isPhoneNum2 = false;
         }
     },
+    created() {
+        this.getQiniuToken();
+    },
     mounted() {
-        getInformation().then(data => {
-            // console.log(data);
+        getInformation().then(res => {
+            console.log(res.data);
+            this.link = res.data.data.data.link;
+            this.typeName = res.data.data.data.type_name;
+            this.belongArea = res.data.data.data.address;
+            this.url1 = res.data.data.data.rz.company_license;
+            this.url2 = res.data.data.data.rz.identity_front;
+            this.url3 = res.data.data.data.rz.identity_back;
+            this.url4 = res.data.data.data.rz.people_identity_front;
+            this.items = res.data.data.data.rz.other;
         });
     }
 };
@@ -162,6 +248,19 @@ export default {
     }
     .el-textarea__inner {
         height: 150px;
+    }
+    .flex-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+    .img-wrap {
+        position: relative;
+    }
+    .img-title {
+        position: absolute;
+        top: -20px;
+        left: 64px;
     }
 }
 </style>
