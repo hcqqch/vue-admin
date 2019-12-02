@@ -60,11 +60,13 @@
 <script>
 import { getInformation, submitInformation } from "../../api/api";
 import axios from "axios";
+
 export default {
     data() {
         return {
             imageUrl: "",
             form: {
+                logo:"",
                 name: "",
                 mobile: "",
                 description: ""
@@ -94,11 +96,13 @@ export default {
             return isJPG && isLt2M;
         },
         onSubmit() {
-            const  params  = this.form
-            console.log(this.form.name);
-            console.log(...params);
+            // const  params  = JSON.parse(JSON.stringify(this.form))
+            // // console.log(JSON.parse(this.form));
+            // console.log(params)
+            const params = this.form;
+            console.log(params);
             submitInformation(params).then(data => {
-                console.log(res.data);
+                console.log(data.data);
             });
         },
         // 添加号码

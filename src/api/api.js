@@ -6,4 +6,4 @@ export const requestLogin = params => { return axios.post(`${base}login`, { para
 // 获取店铺信息
 export const getInformation = params => { return axios.get(`${base}shop/information`, { params: params }); };
 // 提交店铺信息
-export const submitInformation = params => { return axios.post(`${base}shop/information`, { params: params }); };
+export const submitInformation = params => { return axios.post(`${base}shop/information`, {...params }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }); };
