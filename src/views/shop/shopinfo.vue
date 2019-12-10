@@ -12,7 +12,6 @@
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload"
                 >
-                    <img src="imageUrl" alt />
                     <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
@@ -29,7 +28,7 @@
                         v-model="form.mobile2"
                         placeholder="请输入号码2"
                     ></el-input>
-                    <el-button @click="cancelPhone">取消</el-button>
+                    <el-button @click="cancelPhone">删除</el-button>
                 </template>
             </el-form-item>
             <el-form-item label="店铺链接">
@@ -40,7 +39,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">保存</el-button>
-                <el-button>取消</el-button>
+                <!-- <el-button>取消</el-button> -->
             </el-form-item>
             <div class="infoItem">店铺资料</div>
             <div style="padding:10px">
@@ -58,7 +57,6 @@
                         <span class="img-title">营业执照</span>
                         <el-image style="width: 200px; height: 150px" :src="url1" :fit="fit"></el-image>
                     </div>
-
                     <div class="img-wrap">
                         <span class="img-title">法人身份证正面</span>
                         <el-image style="width: 200px; height: 150px" :src="url2" :fit="fit"></el-image>
@@ -95,10 +93,10 @@ export default {
                 logo: "",
                 name: "",
                 mobile: "",
+                mobile2: "",
                 description: ""
             },
             link: "",
-            upload_qiniu_url: "http://up.qiniup.com",
             upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
             qiniuData: { key: "", token: "" },
             imageUrl: "",
@@ -140,9 +138,10 @@ export default {
             this.qiniuData.key = file.name;
             const isJPG = file.type === "image/jpeg";
             const isPNG = file.type === "image/png";
+            const isGIF = file.type === "image/gif";
             const isLt2M = file.size / 1024 / 1024 < 2;
             if (!isJPG && !isPNG) {
-                this.$message.error("图片只能是 JPG/PNG 格式!");
+                this.$message.error("图片只能是 JPG/PNG/GIF 格式!");
                 return false;
             }
             if (!isLt2M) {
@@ -162,11 +161,12 @@ export default {
                 type: "warning"
             });
         },
+        // 保存
         onSubmit() {
             const params = {
                 logo: this.imageUrl,
                 name: this.form.name,
-                mobile: this.form.mobile,
+                mobile: `${this.form.mobile},${this.form.mobile2}`,
                 description: this.form.description
             };
             let config = {
@@ -176,9 +176,21 @@ export default {
                 }
             };
             console.log(qs.stringify(params));
-            submitInformation(qs.stringify(params), config).then(res => {
-                console.log(res);
-            });
+            submitInformation(qs.stringify(params), config)
+                .then(res => {
+                    if (res.data.msg == "修改成功") {
+                        this.$message({
+                            message: "保存成功",
+                            type: "success"
+                        });
+                    }
+                })
+                .catch(err => {
+                    this.$message({
+                        message: err.msg,
+                        type: "error"
+                    });
+                });
         },
         // 添加号码
         addPhone() {
@@ -186,23 +198,34 @@ export default {
         },
         cancelPhone() {
             this.isPhoneNum2 = false;
+        },
+        // 获取店铺信息
+        getInformation() {
+            getInformation().then(res => {
+                const data = res.data.data.data;
+                this.imageUrl = data.logo;
+                this.form.name = data.name;
+                this.form.description = data.description;
+                this.form.mobile = data.mobile.split(",")[0];
+                this.form.mobile2 = data.mobile.split(",")[1];
+                console.log(this.form.mobile2);
+                if (this.form.mobile2.length > 0) this.isPhoneNum2 = true;
+                this.link = data.link;
+                this.typeName = data.type_name;
+                this.belongArea = data.address;
+                this.url1 = data.rz.company_license;
+                this.url2 = data.rz.identity_front;
+                this.url3 = data.rz.identity_back;
+                this.url4 = data.rz.people_identity_front;
+                this.items = data.rz.other;
+            });
         }
     },
     created() {
         this.getQiniuToken();
     },
     mounted() {
-        getInformation().then(res => {
-            console.log(res.data);
-            this.link = res.data.data.data.link;
-            this.typeName = res.data.data.data.type_name;
-            this.belongArea = res.data.data.data.address;
-            this.url1 = res.data.data.data.rz.company_license;
-            this.url2 = res.data.data.data.rz.identity_front;
-            this.url3 = res.data.data.data.rz.identity_back;
-            this.url4 = res.data.data.data.rz.people_identity_front;
-            this.items = res.data.data.data.rz.other;
-        });
+        this.getInformation();
     }
 };
 </script>

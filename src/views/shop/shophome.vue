@@ -1,59 +1,54 @@
 <template>
-<!-- 店铺主页 -->
-<section style="padding:20px">
-       <el-form class="shopInfo" ref="form" :model="form" label-width="120px">
-        <div class="infoItem">店铺主页</div>
-        <el-form-item label="店铺banner图:">
-            <el-upload
-                class="avatar-uploader"
-                action="http://up.qiniup.com"
-                :data="qiniuData"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-            >
-                <img src="imageUrl" alt />
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-        </el-form-item>
-        <el-form-item label="店铺活动模块">
-            <el-input v-model="name"></el-input>
-        </el-form-item>
-        <el-form-item label="店铺优惠券显示">
-			<el-switch
-			v-model="isCoupon">
-			</el-switch>
-        </el-form-item>
-		<el-form-item label="店铺商圈显示">
-            <el-switch
-			v-model="isCircle">
-			</el-switch>
-        </el-form-item>
-        <el-form-item label="店铺底部说明">
-            <el-input type="textarea" v-model="desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">保存</el-button>
-            <el-button>取消</el-button>
-        </el-form-item>
-    </el-form>
-</section>
+    <!-- 店铺主页 -->
+    <section style="padding:20px">
+        <el-form class="shopInfo" ref="form" label-width="120px">
+            <div class="infoItem">店铺主页</div>
+            <el-form-item label="店铺banner图:">
+                <el-upload
+                    class="avatar-uploader"
+                    action="http://up.qiniup.com"
+                    :data="qiniuData"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload"
+                >
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="店铺活动模块">
+                <el-input v-model="active_plate"></el-input>
+            </el-form-item>
+            <el-form-item label="店铺优惠券显示">
+                <el-switch v-model="isCoupon"></el-switch>
+            </el-form-item>
+            <el-form-item label="店铺商圈显示">
+                <el-switch v-model="isCircle"></el-switch>
+            </el-form-item>
+            <el-form-item label="店铺底部说明">
+                <el-input type="textarea" v-model="desc"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">保存</el-button>
+                <!-- <el-button>取消</el-button> -->
+            
+            </el-form-item>
+        </el-form>
+    </section>
 </template>
 
 <script>
-import { submitHomepageinfo } from "../../api/api";
+import { submitHomepageinfo, getHomeInformation, getInformation } from "../../api/api";
 import axios from "axios";
 import qs from "qs";
+
 export default {
     data() {
         return {
 			isCoupon:true,//是否显示优惠券
 			isCircle:true,//是否显示商圈
-            imageUrl: "",
-            name:"",
-            desc:"",
-            upload_qiniu_url: "http://up.qiniup.com",
+            active_plate:"",//活动模块
+            desc:"",//店铺底部说明
             upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
             qiniuData: { key: "", token: "" },
             imageUrl: "",
@@ -86,9 +81,10 @@ export default {
             this.qiniuData.key = file.name;
             const isJPG = file.type === "image/jpeg";
             const isPNG = file.type === "image/png";
+            const isGIF = file.type === "image/gif";
             const isLt2M = file.size / 1024 / 1024 < 2;
             if (!isJPG && !isPNG) {
-                this.$message.error("图片只能是 JPG/PNG 格式!");
+                this.$message.error("图片只能是 JPG/PNG/GIF 格式!");
                 return false;
             }
             if (!isLt2M) {
@@ -109,14 +105,52 @@ export default {
             });
         },
         onSubmit() {
-            submitHomepageinfo().then().catch()
+            const params = {
+                banner:this.imageUrl,
+                coupon_display: this.isCoupon?1:0,
+                circle_display: this.isCoupon?1:0,
+                active_plate: this.active_plate,
+                footer_description: this.desc
+            };
+            let config = {
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded;charset=UTF-8"
+                }
+            };
+            console.log(qs.stringify(params));
+            submitHomepageinfo(qs.stringify(params), config).then(res => {
+                if(res.data.code == 200){
+                    this.$message({
+                        message:"保存成功",
+                        type:"success"
+                    })
+                }
+            }).catch(err=>{
+                this.$message({
+                        message:err.msg,
+                        type:"error"
+                    })
+            });
+        },
+        getHomeInformation(){
+            getHomeInformation().then(res=>{
+                const data =res.data.data.data;
+                this.imageUrl = data.banner;
+                this.active_plate = data.active_plate;
+                this.desc = data.footer_description;
+                if(data.coupon_display==1) this.isCoupon = true 
+                if(data.coupon_display==0) this.isCoupon = false
+                if(data.circle_display==1) this.isCircle = true 
+                if(data.circle_display==0) this.isCircle = false
+            })
         }
     },
     created() {
         this.getQiniuToken();
     },
     mounted() {
-        
+        this.getHomeInformation();
     },
 };
 </script>
@@ -129,11 +163,10 @@ export default {
         background: #f2f2f2;
         margin-bottom: 20px;
     }
-    .el-form-item{
+    .el-form-item {
         width: 450px;
     }
     .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
         border-radius: 6px;
         cursor: pointer;
         position: relative;
@@ -150,6 +183,7 @@ export default {
         height: 178px;
         line-height: 178px;
         text-align: center;
+        border: 1px dashed #d9d9d9;
     }
     .avatar {
         width: 178px;

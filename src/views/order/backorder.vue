@@ -34,14 +34,6 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                    <el-form-item label="订单状态">
-                        <el-select v-model="formInline.brand" placeholder>
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
                     <el-form-item label="商品名称">
                         <el-input v-model="formInline.num" placeholder="姓名/手机号"></el-input>
                     </el-form-item>
@@ -85,24 +77,27 @@
         >
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="num" label="订单号" width="100" sortable></el-table-column>
-            <el-table-column prop="createtime" label="商品编号" width="100" sortable></el-table-column>
             <el-table-column prop="name" label="商品名称" width="100" sortable></el-table-column>
             <el-table-column prop="price" label="规格型号" width="120" sortable></el-table-column>
-            <el-table-column prop="stock" label="单价" min-width="180" sortable></el-table-column>
-            <el-table-column prop="views" label="数量" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="买家账号" min-width="180" sortable></el-table-column>
+            <el-table-column prop="stock" label="价格" min-width="180" sortable></el-table-column>
+            <el-table-column prop="views" label="购买数量" min-width="180" sortable></el-table-column>
             <el-table-column prop="sales" label="优惠券抵扣" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="活动抵扣" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="实际支付" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="支付时间" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="支付方式" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="分销佣金" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="平台佣金" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="实际到账" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="买家账号" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="收货信息" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="订单状态" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="状态更新时间" min-width="180" sortable></el-table-column>
             <el-table-column prop="addr" label="快递单号" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="退换方式" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="退换原因" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="申请次数" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="回退快递" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="退换结果" min-width="180" sortable></el-table-column>
+            <el-table-column prop="addr" label="处理时间" min-width="180" sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>

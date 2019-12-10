@@ -21,7 +21,7 @@
                                 v-for="item in skuOptions"
                                 :key="item.value"
                                 :label="item.label"
-                                :value="item.value"
+                                :value="item.label"
                             ></el-option>
                         </el-select>
                         <!-- <el-input size="small" v-model="item.name" placeholder="输入产品规格"></el-input> -->
@@ -215,6 +215,10 @@
 </template>
 
 <script>
+// import { getAddgoodsInfo, submitAddgoods } from "../../api/api";
+// import axios from "axios";
+// import qs from "qs";
+
 // 为Object添加一个原型方法，判断两个对象是否相等
 function objEquals(object1, object2) {
     // For the first loop, we only check for types
@@ -278,8 +282,11 @@ function objEquals(object1, object2) {
     return true;
 }
 
+
 export default {
     name: "skuwrap",
+
+    props:["skuOptions"],
 
     data() {
         return {
@@ -287,26 +294,13 @@ export default {
             specificationStatus: false,
             // 规格
             specification: [
-                {
-                    name: "颜色",
-                    value: ["黑色", "白色", "蓝色"]
-                }
+                // {
+                //     name: "颜色",
+                //     value: ["黑色", "白色", "蓝色"]
+                // }
             ],
             //规格下拉数据
-            skuOptions: [
-                {
-                    value: "HTML",
-                    label: "HTML"
-                },
-                {
-                    value: "CSS",
-                    label: "CSS"
-                },
-                {
-                    value: "JavaScript",
-                    label: "JavaScript"
-                }
-            ],
+            // skuOptions: [],
             // 子规格
             childProductArray: [
                 {
@@ -362,7 +356,7 @@ export default {
 		//默认价格库存是否可编辑
 		isCanSetting(){
 			return this.specification.length == 0?false:true
-		}
+        },
     },
 
     methods: {
@@ -627,8 +621,9 @@ export default {
         },
 		//上传成功的回调
         handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
-		},
+            // this.imageUrl = URL.createObjectURL(file.raw);
+            this.imageUrl = URL.createObjectURL(file.raw);            
+        },
 		// 上传之前的回调
         beforeAvatarUpload(file) {
             const isJPG = file.type === "image/jpeg";
@@ -642,7 +637,7 @@ export default {
             }
             return isJPG && isLt2M;
         }
-    }
+    },
 };
 </script>
 

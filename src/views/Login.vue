@@ -47,7 +47,6 @@
             <el-form-item style="margin-top:20px">
                 <SliderVerificationCode v-model="slideValue" />
             </el-form-item>
-
             <el-form-item style="width:100%;margin-top:10px">
                 <el-button
                     type="primary"
@@ -61,11 +60,12 @@
 </template>
 
 <script>
-// import { requestLogin } from "../api/api";
+import { requestLogin, requestLogout } from "../api/api";
+import qs from 'qs'
+import axios from 'axios'
 import SliderVerificationCode from "slider-verification-code";
 import "slider-verification-code/lib/slider-verification-code.css";
 import Vue from "vue";
-import { requestLogin } from '../api/api';
 Vue.use(SliderVerificationCode);
 export default {
     data() {
@@ -97,11 +97,27 @@ export default {
     },
     methods: {
         handleSubmit2(ev) {
-			const params = this.ruleForm2
-			requestLogin(params).then((res)=>{
+            // this.$refs.ruleForm2.validate(valid=>{
+            //     if(valid){
+            //         this.logining = true;
+            //         const params = {
+            //             username: this.ruleForm2.account,
+            //             // username: this.ruleForm2.account,
+            //             password: this.ruleForm2.checkPass,
+            //         }
+            //         this.$router.push("/survey");
+            //         // this.$router.push("/survey");
+            //     }
+            // })
 
-			})
+            const params = this.ruleForm2;
+            console.log(params);
+            console.log(qs.stringify(params));
             this.$router.push("/survey");
+            // requestLogout(params).then(res=>{
+                
+            // }).catch()
+            
             // return false;
             // var _this = this;
             // this.$refs.ruleForm2.validate(valid => {

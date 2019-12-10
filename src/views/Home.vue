@@ -13,8 +13,8 @@
 				<el-dropdown trigger="hover">
 					<span class="el-dropdown-link userinfo-inner"><img :src="this.sysUserAvatar" /> {{sysUserName}}</span>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>我的消息</el-dropdown-item>
-						<el-dropdown-item>设置</el-dropdown-item>
+						<el-dropdown-item>个人信息</el-dropdown-item>
+						<el-dropdown-item>切换账号</el-dropdown-item>
 						<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
@@ -60,11 +60,13 @@
 							</el-breadcrumb-item>
 						</el-breadcrumb>
 					</el-col> -->
-					
+					<!-- el-col :span -->
 					<el-col :span="24" class="content-wrapper">
-						<transition name="fade" mode="out-in">
-							<router-view></router-view>
-						</transition>
+						<section style="padding:0 10px">
+							<transition name="fade" mode="out-in">
+								<router-view></router-view>
+							</transition>
+						</section>
 					</el-col>
 				</div>
 			</section>

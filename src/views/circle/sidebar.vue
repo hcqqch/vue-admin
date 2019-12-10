@@ -1,8 +1,8 @@
 <template>
-    <!-- 标签管理 -->
+    <!-- 商圈侧栏商品 -->
     <section>
         <el-col :span="24" class="toolbar">
-            <el-button type="primary" @click="addTag('add')">添加标签</el-button>
+            <el-button type="primary" @click="addTag('add')">添加商品</el-button>
         </el-col>
         <!--列表-->
         <el-table
@@ -12,17 +12,17 @@
             @selection-change="selsChange"
             style="width: 100%;"
         >
-            <el-table-column prop="name" label="标签名称" sortable></el-table-column>
-
+            <el-table-column prop="name" label="商品编号" sortable></el-table-column>
+            <el-table-column prop="name" label="商品名称" sortable></el-table-column>
+            <el-table-column prop="name" label="排序" sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-dialog title="添加商品标签" width="20%" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加商品" width="20%" :visible.sync="dialogFormVisible">
             <el-form :model="form">
                 <el-form-item label="标签名称">
                     <el-input v-model="form.name" autocomplete="off"></el-input>

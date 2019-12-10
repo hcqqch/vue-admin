@@ -1,160 +1,345 @@
 <template>
+    <!-- 店铺自定义分类 -->
     <section class="classify" style="padding:20px">
         <div class="infoItem">商品分类</div>
-        <el-button style="margin-bottom:20px" @click="addNode">新增分类</el-button>
-        <vue-tree-list
-            @click="onClick"
-            @change-name="onChangeName"
-            @delete-node="onDel"
-            @add-node="onAddNode"
-            :model="data"
-            default-tree-node-name="请编辑分类"
-            default-leaf-node-name="请编辑商品"
-            v-bind:default-expanded="false"
+        <div style="margin-bottom:10px">
+            <el-button type="primary" @click="addNewType">添加商品分类</el-button>
+        </div>
+
+        <el-table
+            :data="tableData1"
+            style="width: 100%"
+            row-key="id"
+            border
+            lazy
+            :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         >
-            <span class="icon" slot="addTreeNode"></span>
-            <el-button size="mini" class slot="addLeafNode">新增商品</el-button>
-            <el-button size="mini" class slot="editNode">编辑</el-button>
-            <el-button size="mini" class slot="delNode">删除</el-button>
-        </vue-tree-list>
-        <!-- <button @click="getNewTree">Get new tree</button>
-    <pre>
-      {{newTree}}
-        </pre>-->
+            <el-table-column prop="name" label="分类名称" width="180"></el-table-column>
+            <el-table-column prop="index" label="排序" width="180">
+                <template slot-scope="scope">
+                    <el-select
+                        style="width:50%"
+                        size="mini"
+                        v-model="scope.row.sort"
+                        placeholder="请选择"
+                    >
+                        <template v-if="scope.row.children">
+                            <el-option
+                                v-for="item in sortOptions"
+                                :key="item.sort"
+                                :label="item.label"
+                                :value="item.sort"
+                            ></el-option>
+                        </template>
+                        <template v-else>
+                            <el-option
+                                v-for="item in sortChildOptions"
+                                :key="item.sort"
+                                :label="item.label"
+                                :value="item.sort"
+                            ></el-option>
+                        </template>
+                    </el-select>
+                    <el-button @click="submitSort(scope.row)" size="mini">确定</el-button>
+                </template>
+            </el-table-column>
+            <el-table-column prop="operat" label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                        v-if="scope.row.children"
+                        size="mini"
+                        @click="addNewType2(scope.row.id)"
+                    >添加子分类</el-button>
+                    <el-button
+                        v-if="!scope.row.children"
+                        @click="transferGood(scope.row.id)"
+                        size="mini"
+                    >转移商品</el-button>
+                    <el-button @click="editType(scope.row)" size="mini">编辑</el-button>
+                    <el-button @click="handDel(scope.row.id)" size="mini">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-dialog width="30%" title="添加分类" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="分类名称">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitType">确 定</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog width="30%" title="转移商品" :visible.sync="dialogFormVisible2">
+            <el-transfer
+                filterable
+                :filter-method="filterMethod"
+                filter-placeholder="请输入城市拼音"
+                v-model="value"
+                :data="data"
+            ></el-transfer>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitType">确 定</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
  
 <script>
-import { VueTreeList, Tree, TreeNode } from "vue-tree-list";
+import {
+    getCategorylist,
+    addCategory,
+    editCategory,
+    deleteCategory,
+    sortCategory
+} from "../../api/api";
+import axios from "axios";
+import qs from "qs";
+// import Sortable from "sortablejs";
+
 export default {
-    components: {
-        VueTreeList
-    },
     data() {
+        // return {
+        //     dialogFormVisible: false,
+        //     dialogFormVisible2:false,
+        //     form: {
+        //         name: "" //分类名称
+        //     },
+        //     tableData1: [],
+        //     id: 0,
+        //     isEdit: false,
+        //     rowName: "",
+        //     sortOptions: []
+        // };
+        const generateData = _ => {
+            const data = [];
+            const cities = [
+                "上海",
+                "北京",
+                "广州",
+                "深圳",
+                "南京",
+                "西安",
+                "成都"
+            ];
+            const pinyin = [
+                "shanghai",
+                "beijing",
+                "guangzhou",
+                "shenzhen",
+                "nanjing",
+                "xian",
+                "chengdu"
+            ];
+            cities.forEach((city, index) => {
+                data.push({
+                    label: city,
+                    key: index,
+                    pinyin: pinyin[index]
+                });
+            });
+            return data;
+        };
         return {
-            newTree: {},
-            data: new Tree([
-                {
-                    name: "特产",
-                    id: 1,
-                    pid: 0,
-                    dragDisabled: true,
-                    addTreeNodeDisabled: true,
-                    addLeafNodeDisabled: true,
-                    editNodeDisabled: true,
-                    delNodeDisabled: true,
-                    children: [
-                        {
-                            name: "土豆",
-                            id: 2,
-                            isLeaf: true,
-                            pid: 1
-                        }
-                    ]
-                },
-                {
-                    name: "水果",
-                    id: 3,
-                    pid: 0,
-                    disabled: true
-                },
-                {
-                    name: "蔬菜",
-                    id: 4,
-                    pid: 0
-                }
-            ])
+            data: generateData(),
+            value: [],
+            filterMethod(query, item) {
+                return item.pinyin.indexOf(query) > -1;
+            },
+            dialogFormVisible: false,
+            dialogFormVisible2: false,
+            form: {
+                name: "" //分类名称
+            },
+            tableData1: [],
+            id: 0,
+            isEdit: false,
+            rowName: "",
+            sortOptions: [],
+            sortChildOptions: []
         };
     },
     methods: {
-        onDel(node) {
-            console.log(node);
-            node.remove();
+        // 获取商品分类
+        getCategorylist() {
+            getCategorylist()
+                .then(res => {
+                    const data = res.data.data.data;
+                    // console.log(data);
+                    this.tableData1 = data;
+
+                    this.sortOptions = [];
+                    this.sortChildOptions = []
+                    data.map(item => {
+                        if (item.children.length > 0) {
+                            item.children.map(child => {
+                                this.sortChildOptions.push({
+                                    label: child.sort,
+                                    value: child.sort
+                                });
+                            });
+                        }
+                        // item.children.length == 0;
+                        if (item.children) {
+                            this.sortOptions.push({
+                                label: item.sort,
+                                value: item.sort
+                            });
+                        }
+                        // this.sortOptions.push()
+
+                        // if (item.children.length > 0) {
+                        //     // this.sortOptions = [];
+                        //     item.children.map(item => {
+                        //         this.sortOptions.push({
+                        //             label: item.sort,
+                        //             value: item.sort
+                        //         });
+                        //     });
+                        // } else {
+                        //     this.sortOptions = [];
+                        //     this.sortOptions.push({
+                        //         label: item.sort,
+                        //         value: item.sort
+                        //     });
+                        // }
+                    });
+                    console.log(this.sortOptions)
+                    console.log(this.sortChildOptions)
+                    // console.log(this.sortOptions);
+                })
+                .catch();
         },
-
-        onChangeName(params) {
-            console.log(params);
+        //添加一级分类
+        addNewType() {
+            this.isEdit = false;
+            this.form.name = "";
+            this.id = 0;
+            this.dialogFormVisible = true;
         },
-
-        onAddNode(params) {
-            console.log(params);
+        //添加二级分类
+        addNewType2(id) {
+            this.isEdit = false;
+            this.form.name = "";
+            this.id = id;
+            this.dialogFormVisible = true;
         },
-
-        onClick(params) {
-            console.log(params);
+        // 编辑分类
+        editType(row) {
+            this.isEdit = true;
+            this.id = row.id;
+            this.form.name = row.name;
+            this.dialogFormVisible = true;
         },
-
-        addNode() {
-            var node = new TreeNode({ name: "请编辑分类", isLeaf: false });
-            if (!this.data.children) this.data.children = [];
-            this.data.addChildren(node);
-        },
-
-        getNewTree() {
-            var vm = this;
-            function _dfs(oldNode) {
-                var newNode = {};
-
-                for (var k in oldNode) {
-                    if (k !== "children" && k !== "parent") {
-                        newNode[k] = oldNode[k];
+        async submitSort(row) {
+            // console.log(row);
+            const params = {
+                id: row.id,
+                sort: row.sort
+            };
+            await sortCategory(qs.stringify(params))
+                .then(res => {
+                    if (res.data.msg) {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        });
                     }
-                }
+                })
+                .catch();
 
-                if (oldNode.children && oldNode.children.length > 0) {
-                    newNode.children = [];
-                    for (
-                        var i = 0, len = oldNode.children.length;
-                        i < len;
-                        i++
-                    ) {
-                        newNode.children.push(_dfs(oldNode.children[i]));
+            this.getCategorylist();
+        },
+        transferGood(id) {
+            this.dialogFormVisible2 = true;
+        },
+        handDel(id) {
+            const params = {
+                id
+            };
+            deleteCategory(qs.stringify(params))
+                .then(res => {
+                    if (res.data.msg) {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.msg,
+                            type: "error"
+                        });
                     }
-                }
-                return newNode;
+                })
+                .catch();
+            this.getCategorylist();
+        },
+        async submitType() {
+            if (this.isEdit == true) {
+                const params = {
+                    name: this.form.name,
+                    id: this.id
+                };
+                await editCategory(qs.stringify(params))
+                    .then(res => {
+                        if (res.data.msg) {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "success"
+                            });
+                        } else {
+                            this.$message({
+                                message: res.msg,
+                                type: "error"
+                            });
+                        }
+                    })
+                    .catch();
+            } else {
+                const params = {
+                    name: this.form.name,
+                    pid: this.id
+                };
+                await addCategory(qs.stringify(params))
+                    .then(res => {
+                        if (res.data.msg) {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "success"
+                            });
+                        } else {
+                            this.$message({
+                                message: res.msg,
+                                type: "error"
+                            });
+                        }
+                    })
+                    .catch();
             }
-
-            vm.newTree = _dfs(vm.data);
+            this.dialogFormVisible = false;
+            this.getCategorylist();
         }
+    },
+    mounted() {
+        this.getCategorylist();
     }
 };
 </script> 
 
-<style lang="scss" scopoed>
+<style lang="scss" scoped>
 .classify {
     .infoItem {
         width: 99%;
         padding: 10px;
         background: #f2f2f2;
         margin-bottom: 20px;
-    }
-    .vtl {
-        .vtl-tree-node {
-            padding: 19px 0 5px 1rem;
-            font-size: 18px;
-            // border: 1px solid #ff22ff;
-            // border:1px solid #ff55ff
-        }
-        .vtl-menu-icon ::before{
-            content: ""
-        }
-        // .vtl-icon-folder:before{
-        //     content: ""
-        // }
-        .vtl-drag-disabled {
-            background-color: #f2f2f2;
-            &:hover {
-                background-color: #f2f2f2;
-            }
-        }
-        .vtl-disabled {
-            background-color: #fff;
-        }
-    }
-    .icon {
-        &:hover {
-            cursor: pointer;
-        }
     }
 }
 </style> 

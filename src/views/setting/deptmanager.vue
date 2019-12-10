@@ -4,7 +4,7 @@
         <div class="infoItem">部门管理</div>
         <el-row>
             <el-col :span="24">
-                <el-button type="primary">添加新部门</el-button>
+                <el-button @click="addNewDept" type="primary">添加新部门</el-button>
             </el-col>
         </el-row>
         <el-table
@@ -15,33 +15,36 @@
             style="width: 100%;"
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="部门名称" width="" sortable></el-table-column>
-            <el-table-column prop="createtime" label="职能说明" width="" sortable></el-table-column>
-            <el-table-column label="操作" width="">
+            <el-table-column prop="num" label="部门名称" width sortable></el-table-column>
+            <el-table-column prop="createtime" label="职能说明" width sortable></el-table-column>
+            <el-table-column label="操作" width>
                 <template>
                     <div>
                         <el-button size="small"></el-button>
                     </div>
                 </template>
-                <template scope="scope"> 
-                    <el-button
-                        size=""
-                        type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >权限</el-button>
-                    <el-button
-                        size=""
-                        type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >编辑</el-button>
-                    <el-button
-                        size=""
-                        type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >删除</el-button>
+                <template scope="scope">
+                    <el-button size type="danger" @click="handleDel(scope.$index, scope.row)">权限</el-button>
+                    <el-button size type="danger" @click="handleDel(scope.$index, scope.row)">编辑</el-button>
+                    <el-button size type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
+            
             </el-table-column>
         </el-table>
+        <el-dialog title="添加新部门" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="部门名称" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="职能说明" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
 <script>
@@ -82,15 +85,22 @@ export default {
                     address: "1 1518 弄"
                 }
             ],
-            value: ""
+            form:{},
+            data:[],
+            radio:"",
+            listLoading:"",
+            value: "",
+            formLabelWidth:"100px",
+            dialogFormVisible:false,
         };
     },
     methods: {
-
+        selsChange(){},
+        addNewDept(){
+            this.dialogFormVisible = true;
+        }
     },
-    mounted() {
-        
-    }
+    mounted() {}
 };
 </script>
 <style lang="scss" scoped>

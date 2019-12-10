@@ -424,6 +424,7 @@ export default {
 
 <style lang="scss" scoped>
 .shop-container {
+    padding: 20px;
     .el-col-3 {
         width: 12.5%;
         text-align: center;

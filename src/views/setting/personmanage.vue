@@ -8,7 +8,7 @@
                         <el-input v-model="formInline.name" placeholder="请输入用户名"></el-input>
                     </el-form-item>
                 </el-col>
-                
+
                 <el-col :span="6">
                     <el-form-item label="部门">
                         <el-select v-model="formInline.brand" placeholder="部门">
@@ -33,10 +33,10 @@
             style="width: 100%;"
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="用户名" width="" sortable></el-table-column>
-            <el-table-column prop="createtime" label="联系电话" width="" sortable></el-table-column>
-            <el-table-column prop="name" label="所属部门" width="" sortable></el-table-column>
-            <el-table-column prop="price" label="创建时间" width="" sortable></el-table-column>
+            <el-table-column prop="num" label="用户名" width sortable></el-table-column>
+            <el-table-column prop="createtime" label="联系电话" width sortable></el-table-column>
+            <el-table-column prop="name" label="所属部门" width sortable></el-table-column>
+            <el-table-column prop="price" label="创建时间" width sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -51,7 +51,7 @@
 
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-            <el-button type="">添加员工</el-button>
+            <el-button @click="addEmployee" type>添加员工</el-button>
             <el-pagination
                 layout="prev, pager, next"
                 @current-change="handleCurrentChange"
@@ -60,6 +60,34 @@
                 style="float:right;"
             ></el-pagination>
         </el-col>
+
+        <el-dialog title="添加人员" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="用户名" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="联系电话" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="所属部门" :label-width="formLabelWidth">
+                    <el-checkbox-group v-model="checkList">
+                        <el-checkbox label="客服"></el-checkbox>
+                        <el-checkbox label="管理员"></el-checkbox>
+                        <el-checkbox label="经理"></el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
 
@@ -68,7 +96,7 @@ import { getUserList } from "../../api/api";
 export default {
     data() {
         return {
-            tabPosition:"0",
+            tabPosition: "0",
             data: [],
             total: 0,
             page: 1,
@@ -137,7 +165,11 @@ export default {
                 }
             ],
             createtime: "",
-            listLoading: false
+            listLoading: false,
+            formLabelWidth: "100px",
+            dialogFormVisible: false,
+            form: {},
+            checkList:[]
         };
     },
     methods: {
@@ -161,6 +193,9 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
             this.getdata();
+        },
+        addEmployee() {
+            this.dialogFormVisible = true;
         }
     },
     mounted() {}

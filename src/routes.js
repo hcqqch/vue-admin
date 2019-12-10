@@ -5,6 +5,7 @@ import Main from './views/Main.vue'
 import ShopHome from './views/shop/shophome.vue'
 import ShopInfo from './views/shop/shopinfo.vue'
 import Survey from './views/shop/survey.vue'
+import ChatRoom from './views/commodity/chatroom.vue'
 import CommodityList from './views/commodity/commoditylist.vue'
 import AddCommodity from './views/commodity/addcommodity.vue'
 import Classification from './views/commodity/classification.vue'
@@ -12,16 +13,20 @@ import SetLabel from './views/commodity/setLabel.vue'
 import Comment from './views/commodity/comment.vue'
 import ConsultRecord from './views/commodity/consultRecord.vue'
 import addFremb from './views/commodity/addfremb.vue'
+import TemplateList from './views/commodity/templatelist.vue'
 import CustomClassify from './views/commodity/customclassify.vue'
 import Order from './views/order/Order.vue'
+import BackOrder from './views/order/backorder.vue'
 import CoupleList from './views/markting/coupleList.vue'
 import EditCoupon from './views/markting/editcoupon.vue'
 import Activity from './views/markting/activity.vue'
 import EditActivity from './views/markting/editactivity.vue'
+import ShopMail from './views/markting/shopmail.vue'
 import Account from './views/assets/account.vue'
 import AccountDetail from './views/assets/accountdetail.vue'
 import CircleInfo from './views/circle/circleinfo.vue'
 import SetCircle from './views/circle/setcircle.vue'
+import SideBar from './views/circle/sidebar.vue'
 import Briefing from './views/data/briefing.vue'
 import OrderStatic from './views/data/orderstatic.vue'
 import CancelRate from './views/data/cancelrate.vue'
@@ -64,6 +69,7 @@ let routes = [{
         name: '商品管理',
         iconCls: 'fa fa-id-card-o',
         children: [
+            // { path: '/chatroom', component: ChatRoom, name: '聊天室' },
             { path: '/commoditylist', component: CommodityList, name: '商品列表' },
             { path: '/addcommodity', component: AddCommodity, name: '创建新品' },
             { path: '/classification', component: Classification, name: '分类规格' },
@@ -71,6 +77,8 @@ let routes = [{
             { path: '/comment', component: Comment, name: '商品评论' },
             { path: '/consult', component: ConsultRecord, name: '咨询记录' },
             { path: '/addcommodity/addfremb', component: addFremb, name: '模板设置', hidden: true },
+            { path: '/addcommodity/addfremb/:id', component: addFremb, name: '模板设置', hidden: true },
+            { path: '/addcommodity/templatelist', component: TemplateList, name: '模板管理' },
             { path: '/customclassify', component: CustomClassify, name: '店铺自定义分类' },
         ]
     },
@@ -80,7 +88,8 @@ let routes = [{
         name: '订单管理',
         iconCls: 'fa fa-address-card',
         children: [
-            { path: '/order', component: Order, name: '订单查询' }
+            { path: '/order', component: Order, name: '订单查询' },
+            { path: '/backorder', component: BackOrder, name: '退货订单' }
         ]
     },
     {
@@ -93,6 +102,7 @@ let routes = [{
             { path: '/editcoupon/', component: EditCoupon, name: '新增优惠券', hidden: true },
             { path: '/activity', component: Activity, name: '满减活动' },
             { path: '/editactivity/', component: EditActivity, name: '新增活动', hidden: true },
+            { path: '/shopmail', component: ShopMail, name: '店铺包邮' },
         ]
     },
     {
@@ -136,10 +146,11 @@ let routes = [{
         path: '/',
         component: Home,
         name: '商圈管理',
-        iconCls: 'fa fa-bar-chart',
+        iconCls: 'el-icon-info',
         children: [
             { path: '/circleinfo', component: CircleInfo, name: '商圈信息' },
             { path: '/setcircle', component: SetCircle, name: '商圈设置' },
+            { path: '/sidebar', component: SideBar, name: '商圈侧栏管理' },
         ]
     },
     {
@@ -150,3 +161,5 @@ let routes = [{
 ];
 
 export default routes;
+
+// export default routes;
