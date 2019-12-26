@@ -31,32 +31,35 @@
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">保存</el-button>
                 <!-- <el-button>取消</el-button> -->
-            
             </el-form-item>
         </el-form>
     </section>
 </template>
 
 <script>
-import { submitHomepageinfo, getHomeInformation, getInformation } from "../../api/api";
+import {
+    submitHomepageinfo,
+    getHomeInformation,
+    getInformation
+} from "../../api/api";
 import axios from "axios";
 import qs from "qs";
 
 export default {
     data() {
         return {
-			isCoupon:true,//是否显示优惠券
-			isCircle:true,//是否显示商圈
-            active_plate:"",//活动模块
-            desc:"",//店铺底部说明
+            isCoupon: true, //是否显示优惠券
+            isCircle: true, //是否显示商圈
+            active_plate: "", //活动模块
+            desc: "", //店铺底部说明
             upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
             qiniuData: { key: "", token: "" },
             imageUrl: "",
             Global: {
                 dataUrl: "http://office.pintaihui.cn"
-            },
+            }
         };
-    }, 
+    },
     methods: {
         getQiniuToken: function() {
             const _this = this;
@@ -106,44 +109,42 @@ export default {
         },
         onSubmit() {
             const params = {
-                banner:this.imageUrl,
-                coupon_display: this.isCoupon?1:0,
-                circle_display: this.isCoupon?1:0,
+                banner: this.imageUrl,
+                coupon_display: this.isCoupon ? 1 : 0,
+                circle_display: this.isCoupon ? 1 : 0,
                 active_plate: this.active_plate,
                 footer_description: this.desc
             };
-            let config = {
-                headers: {
-                    "Content-Type":
-                        "application/x-www-form-urlencoded;charset=UTF-8"
-                }
-            };
             console.log(qs.stringify(params));
-            submitHomepageinfo(qs.stringify(params), config).then(res => {
-                if(res.data.code == 200){
-                    this.$message({
-                        message:"保存成功",
-                        type:"success"
-                    })
-                }
-            }).catch(err=>{
-                this.$message({
-                        message:err.msg,
-                        type:"error"
-                    })
-            });
+            submitHomepageinfo(qs.stringify(params), config)
+                .then(res => {
+                    if (res.data.code == 200) {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         },
-        getHomeInformation(){
-            getHomeInformation().then(res=>{
-                const data =res.data.data.data;
+        getHomeInformation() {
+            getHomeInformation().then(res => {
+                const data = res.data.data.data;
                 this.imageUrl = data.banner;
                 this.active_plate = data.active_plate;
                 this.desc = data.footer_description;
-                if(data.coupon_display==1) this.isCoupon = true 
-                if(data.coupon_display==0) this.isCoupon = false
-                if(data.circle_display==1) this.isCircle = true 
-                if(data.circle_display==0) this.isCircle = false
-            })
+                if (data.coupon_display == 1) this.isCoupon = true;
+                if (data.coupon_display == 0) this.isCoupon = false;
+                if (data.circle_display == 1) this.isCircle = true;
+                if (data.circle_display == 0) this.isCircle = false;
+            });
         }
     },
     created() {
@@ -151,7 +152,7 @@ export default {
     },
     mounted() {
         this.getHomeInformation();
-    },
+    }
 };
 </script>
 

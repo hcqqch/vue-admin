@@ -136,10 +136,15 @@ export default {
                 t_id:this.thirdId,
             }
             addGoodsNewlist(qs.stringify(params)).then(res=>{
-                if (res.data.msg) {
+                if (res.data.code==200) {
                         this.$message({
                             message: res.data.msg,
                             type: "success"
+                        });
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
                         });
                     }
             }).catch()
@@ -225,10 +230,15 @@ export default {
             };
             addNorms(qs.stringify(params))
                 .then(res => {
-                    if (res.data.msg) {
+                    if (res.data.code==200) {
                         this.$message({
                             message: res.data.msg,
                             type: "success"
+                        });
+                    }else{
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
                         });
                     }
                 })

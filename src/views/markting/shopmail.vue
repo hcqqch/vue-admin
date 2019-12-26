@@ -2,70 +2,50 @@
     <!-- 店铺包邮 -->
     <section style="padding:20px">
         <div class="infoItem">店铺包邮</div>
-            <!-- 指定包邮 -->
-            <div style="margin:30px 0 20px 0">
-                <el-checkbox v-model="isShiping">指定包邮</el-checkbox>
-            </div>
-            
-            <div v-if="isShiping">
-                <el-table
-                    :data="areaData2"
-                    style="width:100%"
-                    :header-row-style="{
+        <!-- 指定包邮 -->
+        <div style="margin:30px 0 20px 0">
+            <!-- <el-checkbox v-model="isShiping">指定包邮</el-checkbox> -->
+        </div>
+
+        <div>
+            <el-table
+                :data="areaData"
+                style="width:100%"
+                :header-row-style="{
                     'background-color': '#f2f2f2',
                 }"
-                >
-                    <el-table-column prop="area" label="可配送区域" width="500"></el-table-column>
-                    <el-table-column prop label="包邮方式" width>
-                        <template slot-scope="scope">
-                            <el-select v-model="scope.row.type" placeholder="请选择">
-                                <el-option
-                                    v-for="item in byoptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="condition" label="设置包邮条件" width>
-                        <template slot-scope="scope">
-                            <div v-if="scope.row.type==1">
-                                满
-                                <el-input v-model="scope.row.num" style="width:20%"></el-input>件包邮
-                            </div>
-                            <div v-if="scope.row.type==2">
-                                满
-                                <el-input v-model="scope.row.money" style="width:20%"></el-input>元包邮
-                            </div>
-                            <div v-if="scope.row.type==3">
-                                满
-                                <el-input v-model="scope.row.num" style="width:20%"></el-input>件包邮 满
-                                <el-input v-model="scope.row.money" style="width:20%"></el-input>元包邮
-                            </div>
-                        </template>
-                    </el-table-column>
+            >
+                <el-table-column prop="area" label="可配送区域" width="500"></el-table-column>
+                <el-table-column prop="condition" label="设置包邮条件" width>
+                    <template slot-scope="scope">
+                        <div>
+                            满
+                            <el-input v-model="scope.row.money" style="width:20%"></el-input>元包邮
+                        </div>
+                    </template>
+                </el-table-column>
 
-                    <el-table-column prop="operate" label="操作" width="180">
-                        <template slot-scope="scope">
-                            <el-button
-                                @click.native.prevent="editArea(scope.$index, areaData,'free')"
-                                type="text"
-                                size="small"
-                            >修改</el-button>
-                            <el-button
-                                @click.native.prevent="deleteRow2(scope.$index, areaData2)"
-                                type="text"
-                                size="small"
-                            >删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <div style="margin-top:20px">
-                    <el-button type="primary" @click="showDialog()">指定可配送区域和包邮条件</el-button>
-                </div>
+                <el-table-column prop="operate" label="操作" width="180">
+                    <template slot-scope="scope">
+                        <el-button
+                            @click.native.prevent="editArea(scope.$index, areaData)"
+                            type="text"
+                            size="small"
+                        >修改</el-button>
+                        <el-button
+                            @click.native.prevent="deleteRow(scope.$index, areaData)"
+                            type="text"
+                            size="small"
+                        >删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div style="margin-top:20px">
+                <el-button type="primary" @click="showDialog()">指定可配送区域和包邮条件</el-button>
+                <el-button type="primary" @click="submit">保存</el-button>
             </div>
-            
+        </div>
+
         <el-dialog
             :destroy-on-close="true"
             title="选择配送区域"
@@ -77,93 +57,17 @@
                 <!-- 使用slot 可以传入自定义内容来替换默认文字 -->
             </element-china-checkbox>
         </el-dialog>
-
-
-        <!-- 参与商品 -->
-        <el-form ref="form" :model="form">
-            <el-form-item label="活动商品">
-                <el-radio-group style="padding-top:14px" v-model="form.radioCondition">
-                    <div>
-                        <el-radio :label="3">全部商品参与</el-radio>
-                    </div>
-                    <div style="margin-top:10px">
-                        <el-radio :label="6">仅指定商品参与</el-radio>
-                    </div>
-                </el-radio-group>
-            </el-form-item>
-
-            <div>
-                <el-row>
-                    <el-col :span="24" class="toolbar">
-                        <el-form ref="form2" :model="form2">
-                            <el-col :span="6">
-                                <el-form-item label="商品名称" style="margin:0">
-                                    <el-input style="width:200px" v-model="form2.name"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-form-item  style="width:420px;margin:0" label="价格区间">
-                                    <el-input v-model="form2.name" style="width:30%"></el-input>至
-                                    <el-input v-model="form2.cname" style="width:30%"></el-input>
-                                    <el-button type="primary">查询</el-button>
-                                </el-form-item>
-                            </el-col>
-                        </el-form>
-                    </el-col>
-                </el-row>
-            </div>
-
-            <div class="infoItem">
-                已选
-            </div>
-
-            <div>
-                 <el-table
-            :data="data"
-            highlight-current-row
-            @selection-change="selsChange"
-            style="width: 100%;"
-        >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="商品名称" width="" sortable></el-table-column>
-            <el-table-column prop="createtime" label="价格" width="" sortable></el-table-column>
-            <el-table-column label="操作" width="150">
-                <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">选取加入</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <!--工具条-->
-        <el-col :span="24" class="toolbar">
-            <el-button type="">批量加入</el-button>
-            <el-pagination
-                layout="prev, pager, next"
-                @current-change="handleCurrentChange"
-                :page-size="20"
-                :total="total"
-                style="float:right;"
-            ></el-pagination>
-        </el-col>
-            </div>
-        </el-form>
     </section>
 </template>
 
 <script>
 import elementChinaCheckbox from "element-china-checkbox";
+import { editFreightTmplate, addShopmail, getShopmail } from "../../api/api";
+import qs from "qs";
 export default {
     data() {
         return {
-            form: {
-                
-            },
-            data:[],
-            total:0,
-            isShiping:false,
-            areaData2:[],
-            byoptions:[],
-            dialogVisible:false,
+            dialogVisible: false,
             provinceId: [],
             cityId: [],
             areaId: [],
@@ -172,25 +76,141 @@ export default {
                 cityId: [], // 城市ID
                 areaId: [] // 区县ID
             },
-            form2:{}
+            areaData: [],
+            money: "",
+            isEdit: false,
+            index: ""
         };
     },
     methods: {
-        getElData(){},
-        editArea(){
+        getElData() {
+            const checkboxData = this.$refs.checkbox;
+            this.provinceId = checkboxData.provinceId;
+            this.cityId = checkboxData.cityId;
+            this.areaId = checkboxData.areaId;
 
+            const areaArr = [];
+            const areaArr2 = [];
+            const areaArr3 = [];
+
+            this.provinceId.map(id => {
+                areaArr.push(checkboxData.REGION_DATA[86][id]);
+            });
+
+            this.cityId.map(id => {
+                this.provinceId.map(pid => {
+                    if (checkboxData.REGION_DATA[pid][id]) {
+                        areaArr2.push(checkboxData.REGION_DATA[pid][id]);
+                    }
+                });
+            });
+
+            console.log(areaArr);
+            console.log(areaArr2);
+            console.log(areaArr3);
+            if (this.isEdit == true) {
+                this.areaData.splice(this.index, 1, {
+                    area: areaArr.toString(),
+                    provinceId: this.provinceId,
+                    cityId: this.cityId,
+                    money: this.money
+                });
+            } else {
+                this.areaData.push({
+                    area: areaArr.toString(),
+                    provinceId: this.provinceId,
+                    cityId: this.cityId,
+                    money: this.money
+                });
+            }
+
+            this.provinceId = [];
+            this.cityId = [];
+            this.areaId = [];
+            this.dialogVisible = false;
         },
-        deleteRow2(){},
-        showDialog(){
-            this.dialogVisible = true
+        editArea(index) {
+            this.index = index;
+            this.dialogVisible = true;
+            this.isEdit = true;
         },
-        back(){},
-        selsChange(){},
-        handleCurrentChange(){}
+        deleteRow(index) {
+            this.areaData.splice(index, 1);
+        },
+
+        showDialog() {
+            this.isEdit = false;
+            this.dialogVisible = true;
+        },
+        handleCurrentChange() {},
+        submit() {
+            const params = {
+                // data: this.areaData
+                firstName: [1,2],
+                lastName: "Flintstone"
+            };
+
+            console.log(params);
+
+            addShopmail(
+                // {data:JSON.stringify(params)},
+                
+                qs.stringify(params),
+                { arrayFormat: 'repeat' }
+                // {
+                //     transformRequest: [
+                //         function(data) {
+                //             var str = "";
+                //             for (var key in data) {
+                //                 str +=
+                //                     encodeURIComponent(key) +
+                //                     "=" +
+                //                     encodeURIComponent(data[key]) +
+                //                     "&";
+                //             }
+                //             return str;
+                //         }
+                //     ]
+                // }
+            )
+                .then(res => {
+                    if (res.data.code == 200) {
+                        this.$message({
+                            type: "success",
+                            message: res.data.msg
+                        });
+                    } else {
+                        this.$message({
+                            type: "warning",
+                            message: res.data.msg
+                        });
+                    }
+                })
+                .catch(err => {});
+        },
+        getShopmail() {
+            getShopmail()
+                .then(res => {
+                    if (res.data.code == 200) {
+                        console.log(res.data.data);
+                        const data = res.data.data.data;
+                        this.areaData = data;
+                    } else {
+                        this.$message({
+                            type: "warning",
+                            message: res.data.msg
+                        });
+                    }
+                })
+                .catch();
+        }
     },
     components: {
         elementChinaCheckbox
     },
+    mounted() {
+        this.getShopmail();
+    }
 };
 </script>
 

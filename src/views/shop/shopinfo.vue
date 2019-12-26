@@ -169,27 +169,24 @@ export default {
                 mobile: `${this.form.mobile},${this.form.mobile2}`,
                 description: this.form.description
             };
-            let config = {
-                headers: {
-                    "Content-Type":
-                        "application/x-www-form-urlencoded;charset=UTF-8"
-                }
-            };
+            
             console.log(qs.stringify(params));
             submitInformation(qs.stringify(params), config)
                 .then(res => {
-                    if (res.data.msg == "修改成功") {
+                    if (res.data.code == 200) {
                         this.$message({
-                            message: "保存成功",
+                            message: res.data.msg,
                             type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
                         });
                     }
                 })
                 .catch(err => {
-                    this.$message({
-                        message: err.msg,
-                        type: "error"
-                    });
+                    console.log(err);
                 });
         },
         // 添加号码

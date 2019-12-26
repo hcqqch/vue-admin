@@ -1,67 +1,44 @@
 <template>
-<!-- 商品评论 -->
+    <!-- 商品评论 -->
     <section>
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-col :span="6">
-                    <el-form-item label="商品名称">
-                        <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="商品分类">
-                        <el-cascader
-                            v-model="type"
-                            :options="options"
-                            :props="{ expandTrigger: 'hover' }"
-                            @change="handleChange"
-                        ></el-cascader>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="商品编号">
-                        <el-input v-model="formInline.num" placeholder="商品编号"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="onSearch">查询</el-button>
-                        <el-button type="primary" @click="resetField">重置</el-button>
-                    </el-form-item>
-                </el-col>
+                <el-form-item label="商品名称">
+                    <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
+                </el-form-item>
+                <el-form-item label="商品分类">
+                    <el-cascader
+                        v-model="type"
+                        :options="options"
+                        :props="{ checkStrictly: true }"
+                        @change="handleChange"
+                    ></el-cascader>
+                </el-form-item>
+                <el-form-item label="商品编号">
+                    <el-input v-model="formInline.num" placeholder="商品编号"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSearch">查询</el-button>
+                    <el-button type="primary" @click="resetField">重置</el-button>
+                </el-form-item>
             </el-form>
         </el-col>
 
         <!--列表-->
-        <el-table
-            :data="data"
-            highlight-current-row
-            v-loading="listLoading"
-            style="width: 100%;"
-        >
-            <el-table-column prop="num" label="商品名称" width="100" sortable></el-table-column>
-            <el-table-column prop="createtime" label="规格" width="100" sortable></el-table-column>
-            <el-table-column prop="name" label="下单时间" width="100" sortable></el-table-column>
-            <el-table-column prop="price" label="收货时间" width="120" sortable></el-table-column>
-            <el-table-column prop="stock" label="评论内容" min-width="180" sortable></el-table-column>
-            <el-table-column prop="views" label="评论内容" min-width="180" sortable></el-table-column>
-            <el-table-column prop="sales" label="评论时间" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="掌柜回复" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="回复人" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="回复时间" min-width="180" sortable></el-table-column>
+        <el-table :data="data" highlight-current-row v-loading="listLoading" style="width: 100%;">
+            <el-table-column prop="goods_name" label="商品名称" width="100" sortable></el-table-column>
+            <el-table-column prop="norms_name" label="规格" width="100" sortable></el-table-column>
+            <el-table-column prop="paytime" label="下单时间" width="100" sortable></el-table-column>
+            <el-table-column prop="confirm_time" label="收货时间" width="120" sortable></el-table-column>
+            <el-table-column prop="content" label="评论内容" min-width="180" sortable></el-table-column>
+            <el-table-column prop="created_at" label="评论时间" min-width="180" sortable></el-table-column>
+            <el-table-column prop="reply" label="掌柜回复" min-width="180" sortable></el-table-column>
+            <el-table-column prop="reply_user_name" label="回复人" min-width="180" sortable></el-table-column>
+            <el-table-column prop="reply_at" label="回复时间" min-width="180" sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >删除</el-button>
-                    <el-button size="small" @click="handleObt(scope.$index, scope.row)">下架</el-button>
-                    <el-button
-                        type="danger"
-                        size="small"
-                        @click="handleAdj(scope.$index, scope.row)"
-                    >调整库存</el-button>
+                    <el-button size="small" @click="handleReply(scope.row.id)">回复</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -76,110 +53,120 @@
                 style="float:right;"
             ></el-pagination>
         </el-col>
+
+        <el-dialog width="30%" title="回复评论" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="回复评论">
+                    <el-input type="textarea" v-model="form.comment" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitComment">确 定</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
 
 <script>
-import { getUserList } from "../../api/api";
+import { getCommentList, getGoodsCategory, replyComment } from "../../api/api";
+
 export default {
     data() {
         return {
-            tabPosition:"0",
             data: [],
             total: 0,
             page: 1,
-            sels: [], //列表选中项
             formInline: {
                 name: "",
-                createtime: "",
-                brand: ""
+                cid: "",
+                num: ""
             },
             type: [],
-            options: [
-                {
-                    value: 1,
-                    label: "东南",
-                    children: [
-                        {
-                            value: 2,
-                            label: "上海",
-                            children: [
-                                { value: 3, label: "普陀" },
-                                { value: 4, label: "黄埔" },
-                                { value: 5, label: "徐汇" }
-                            ]
-                        },
-                        {
-                            value: 7,
-                            label: "江苏",
-                            children: [
-                                { value: 8, label: "南京" },
-                                { value: 9, label: "苏州" },
-                                { value: 10, label: "无锡" }
-                            ]
-                        },
-                        {
-                            value: 12,
-                            label: "浙江",
-                            children: [
-                                { value: 13, label: "杭州" },
-                                { value: 14, label: "宁波" },
-                                { value: 15, label: "嘉兴" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 17,
-                    label: "西北",
-                    children: [
-                        {
-                            value: 18,
-                            label: "陕西",
-                            children: [
-                                { value: 19, label: "西安" },
-                                { value: 20, label: "延安" }
-                            ]
-                        },
-                        {
-                            value: 21,
-                            label: "新疆维吾尔族自治区",
-                            children: [
-                                { value: 22, label: "乌鲁木齐" },
-                                { value: 23, label: "克拉玛依" }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            createtime: "",
-            listLoading: false
+            options: [],
+            listLoading: false,
+            cid: "",
+            form: {
+                comment: ""
+            },
+            dialogFormVisible: false,
+            id: ""
         };
     },
     methods: {
-        selsChange() {},
-        handleChange() {},
-        onSearch() {},
-        resetField() {},
-        handleEdit() {},
-        handleDel() {},
-        handleObt() {},
-        handleAdj() {},
-        getdata() {
-            let para = {};
-            this.listLoading = true;
-            getUserList(para).then(data => {
-                this.total = res.data.total;
-                this.data = res.data.users;
-                this.listLoading = false;
-            });
+        handleChange(val) {
+            this.cid = val.toString();
+        },
+        onSearch() {
+            this.getCommentList();
+        },
+        resetField() {
+            this.formInline = {};
         },
         handleCurrentChange(val) {
             this.page = val;
             this.getdata();
+        },
+        getCommentList() {
+            const params = {
+                name: this.formInline.name,
+                cid: this.cid,
+                goods_no: this.formInline.num
+            };
+            this.listLoading = true;
+            getCommentList(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.data = data.lists;
+                    this.listLoading = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        getGoodsCategory() {
+            getGoodsCategory()
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.options = data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        handleReply(id) {
+            this.dialogFormVisible = true;
+            this.id = id;
+        },
+        submitComment() {
+            const params = {
+                id: this.id,
+                content: this.form.comment
+            };
+            replyComment(params)
+                .then(res => {
+                    if (res.data.code == 200) {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            this.dialogFormVisible = false;
         }
     },
-    mounted() {}
+    mounted() {
+        this.getCommentList();
+        this.getGoodsCategory();
+    }
 };
 </script>
 

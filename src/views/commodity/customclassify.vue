@@ -234,22 +234,22 @@ export default {
             this.dialogFormVisible = true;
         },
         async submitSort(row) {
-            // console.log(row);
+            console.log(row);
             const params = {
                 id: row.id,
                 sort: row.sort
             };
-            await sortCategory(qs.stringify(params))
+            await sortCategory(params)
                 .then(res => {
-                    if (res.data.msg) {
+                    if (res.data.code==200) {
                         this.$message({
                             message: res.data.msg,
                             type: "success"
                         });
                     } else {
                         this.$message({
-                            message: res.msg,
-                            type: "error"
+                            message: res.data.msg,
+                            type: "warning"
                         });
                     }
                 })
@@ -266,15 +266,15 @@ export default {
             };
             deleteCategory(qs.stringify(params))
                 .then(res => {
-                    if (res.data.msg) {
+                    if (res.data.code==200) {
                         this.$message({
                             message: res.data.msg,
                             type: "success"
                         });
                     } else {
                         this.$message({
-                            message: res.msg,
-                            type: "error"
+                            message: res.data.msg,
+                            type: "warning"
                         });
                     }
                 })
@@ -289,14 +289,14 @@ export default {
                 };
                 await editCategory(qs.stringify(params))
                     .then(res => {
-                        if (res.data.msg) {
+                        if (res.data.code==200) {
                             this.$message({
                                 message: res.data.msg,
                                 type: "success"
                             });
                         } else {
                             this.$message({
-                                message: res.msg,
+                                message: res.data.msg,
                                 type: "error"
                             });
                         }
@@ -309,15 +309,15 @@ export default {
                 };
                 await addCategory(qs.stringify(params))
                     .then(res => {
-                        if (res.data.msg) {
+                        if (res.data.code==200) {
                             this.$message({
                                 message: res.data.msg,
                                 type: "success"
                             });
                         } else {
                             this.$message({
-                                message: res.msg,
-                                type: "error"
+                                message: res.data.msg,
+                                type: "warning"
                             });
                         }
                     })

@@ -67,4 +67,60 @@ body {
 .fade-leave-active {
 	opacity: 0;
 }
+
+.el-icon-my-shop{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/shop.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-goods{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/goods.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-order{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/order.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-markting{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/markting.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-money{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/money.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-data{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/data.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-setting{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/setting.png') center no-repeat;
+    background-size: cover;
+}
+
+.el-icon-my-circle{
+	width: 18px !important;
+	height: 18px !important;
+    background: url('./assets/circle.png') center no-repeat;
+    background-size: cover;
+}
 </style>

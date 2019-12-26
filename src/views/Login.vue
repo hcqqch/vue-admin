@@ -8,7 +8,7 @@
         label-width="0px"
         class="demo-ruleForm login-container"
     >
-        <img @click="showCode" class="code-login" src="../assets/code.png" alt="切换登录" title="切换登录方式" />
+        <div @click="showCode" class="code-login" alt="切换登录" title="切换登录方式"></div>
         <h3 class="title">圈助商户管理平台</h3>
         <div v-show="isShow">
             <el-form-item prop="account">
@@ -17,13 +17,17 @@
                     v-model="ruleForm2.account"
                     auto-complete="off"
                     placeholder="请输入用户名"
+                    @blur="getShop"
                 ></el-input>
             </el-form-item>
             <el-form-item prop="shop">
-                <el-select v-model="ruleForm2.shop_id" placeholder="请选择店铺">
-                    <!-- <el-option label="店铺1" value="owner"></el-option>
-                    <el-option label="店铺2" value="service"></el-option>
-                    <el-option label="店铺3" value="admin"></el-option> -->
+                <el-select @change="changeShops" v-model="ruleForm2.shop_id" placeholder="请选择店铺">
+                    <el-option
+                        v-for="item in shopOptions"
+                        :key="item.shop_id"
+                        :label="item.shop_name"
+                        :value="item.shop_id"
+                    ></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item prop="identity">
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import { requestLogin, requestLogout } from "../api/api";
+import { requestLogin, requestLogout,getShops,checkAccount } from "../api/api";
 import qs from 'qs'
 import axios from 'axios'
 import SliderVerificationCode from "slider-verification-code";
@@ -71,6 +75,7 @@ export default {
     data() {
         return {
             logining: false,
+            shopOptions:[],
             ruleForm2: {
                 account: "",
 				checkPass: "",
@@ -96,6 +101,30 @@ export default {
         };
     },
     methods: {
+        getShop(){
+            console.log(this.ruleForm2.account)
+            const params = {
+                mobile:this.ruleForm2.account
+            }
+            getShops(params).then(res=>{
+                const data =res.data.data;
+                this.shopOptions = data.shops;
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        changeShops(value){
+            console.log(value);
+            const params = {
+                shop_id:value
+            }
+            checkAccount(params).then(res=>{
+
+            }).catch(err=>{
+                console.log(err)
+            })
+
+        },
         handleSubmit2(ev) {
             // this.$refs.ruleForm2.validate(valid=>{
             //     if(valid){
@@ -112,7 +141,6 @@ export default {
 
             const params = this.ruleForm2;
             console.log(params);
-            console.log(qs.stringify(params));
             this.$router.push("/survey");
             // requestLogout(params).then(res=>{
                 
@@ -158,9 +186,7 @@ export default {
         },
         // 点击切换二维码显示
         showCode() {
-			this.isShow = !this.isShow;
-			// this.isShow = !this.isShow;
-			
+			this.isShow = !this.isShow;	
         }
 	},
 	mounted() {
@@ -196,11 +222,13 @@ export default {
     }
     .code-login {
         position: absolute;
-        width: 20px;
-        height: 20px;
-        right: 20px;
-        top: 20px;
+        width: 50px;
+        height: 50px;
+        right: 0px;
+        top: 0px;
         cursor: pointer;
+        transform: rotate(-90deg);
+        background: url("../assets/erweima.png") no-repeat;
     }
 }
 </style>

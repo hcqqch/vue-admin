@@ -4,46 +4,25 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-col :span="6">
                     <el-form-item label="优惠券名称">
-                        <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
+                        <el-input v-model="formInline.name" placeholder=""></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="6">
                     <el-form-item label="优惠券类型">
-                        <el-cascader
-                            v-model="type"
-                            :options="options"
-                            :props="{ expandTrigger: 'hover' }"
-                            @change="handleChange"
-                        ></el-cascader>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="领取方式">
-                        <el-select v-model="formInline.brand" placeholder="领取方式">
-                            <el-option label="手工领取" value="shanghai"></el-option>
-                            <el-option label="自动领取" value="beijing"></el-option>
+                        <el-select v-model="formInline.type" placeholder="请选择">
+                            <el-option label="现金券" value="1"></el-option>
+                            <el-option label="折扣券" value="2"></el-option>
                         </el-select>
                     </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="折扣比">
-                        <el-input v-model="formInline.num" placeholder="折扣比"></el-input>
+                    <el-form-item label="领取方式">
+                        <el-select v-model="formInline.send_type" placeholder="领取方式">
+                            <el-option label="自助领取" value="1"></el-option>
+                            <el-option label="手工发送" value="2"></el-option>
+                            <el-option label="活动领取" value="3"></el-option>
+                        </el-select>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="面值">
-                        <el-input v-model="formInline.name" placeholder="面值"></el-input>
-                    </el-form-item>
-                    <el-form-item label="至">
-                        <el-input v-model="formInline.name" placeholder="面值"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
                     <el-form-item label="有效期">
                         <el-date-picker
-                            v-model="createtime"
+                            v-model="formInline.effectiveTime"
                             type="daterange"
                             range-separator="至"
                             start-placeholder="有效期"
@@ -54,16 +33,14 @@
                         <el-button type="primary" @click="onSearch">查询</el-button>
                         <el-button type="primary" @click="resetField">重置</el-button>
                     </el-form-item>
-                </el-col>
             </el-form>
         </el-col>
 
         <!--列表-->
-        <el-radio-group v-model="tabPosition" style="margin-bottom: 10px;">
-            <el-radio-button label="0">可用优惠券</el-radio-button>
-            <el-radio-button label="1">过期优惠券</el-radio-button>
-            <el-radio-button label="2">领取使用记录</el-radio-button>
-            <el-radio-button label="3">回收站</el-radio-button>
+        <el-radio-group v-model="status" @change="radioChange" style="margin-bottom: 10px;">
+            <el-radio-button label="1">可用优惠券</el-radio-button>
+            <el-radio-button label="2">未开始优惠券</el-radio-button>
+            <el-radio-button label="3">过期优惠券</el-radio-button>
         </el-radio-group>
        <el-button class="addCouponBtn" @click="addCoupon" type="primary">新增优惠券</el-button>
         <el-table
@@ -74,23 +51,33 @@
             style="width: 100%;"
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="优惠卷名称" width="100" sortable></el-table-column>
-            <el-table-column prop="createtime" label="生成时间" width="100" sortable></el-table-column>
-            <el-table-column prop="name" label="面值" width="100" sortable></el-table-column>
-            <el-table-column prop="price" label="使用条件" width="120" sortable></el-table-column>
-            <el-table-column prop="stock" label="使用期限" min-width="180" sortable></el-table-column>
-            <el-table-column prop="views" label="领取限制" min-width="180" sortable></el-table-column>
-            <el-table-column prop="sales" label="发放总量" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="已领取" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="已使用" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="优惠券链接" min-width="180" sortable></el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column prop="title" label="优惠卷名称" width="" sortable></el-table-column>
+            <el-table-column prop="created_at" label="生成时间" width="" sortable></el-table-column>
+            <el-table-column prop="amount" label="面值" width="" sortable></el-table-column>
+            <el-table-column prop="use_type" label="使用条件" width="" sortable>
+                <template slot-scope="scope">
+                    <div v-if="scope.row.use_type==0">不限制</div>
+                    <div v-if="scope.row.use_type==1">满减</div>
+                    <div v-if="scope.row.use_type==2">满件</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="exp_start" label="使用期限" min-width="" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.exp_start}}至{{scope.row.exp_end}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="get_count" label="领取限制" min-width="" sortable></el-table-column>
+            <el-table-column prop="count" label="发放总量" min-width="" sortable></el-table-column>
+            <el-table-column prop="get_total" label="已领取" min-width="" sortable></el-table-column>
+            <el-table-column prop="use_total" label="已使用" min-width="" sortable></el-table-column>
+            <!-- <el-table-column prop="addr" label="优惠券链接" min-width="" sortable></el-table-column> -->
+            <el-table-column label="操作" width="210">
                 <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
+                    <el-button size="small" @click="handleEdit(scope.row.id)">领取使用记录</el-button>
+                    <el-button v-if="status==1||status==2"
                         size="small"
                         type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
+                        @click="handleOver(scope.row.id)"
                     >结束</el-button>
                 </template>
             </el-table-column>
@@ -98,7 +85,7 @@
 
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-            <el-button type="">结束</el-button>
+            <el-button @click="handleBatchOver">批量结束</el-button>
             <el-pagination
                 layout="prev, pager, next"
                 @current-change="handleCurrentChange"
@@ -111,109 +98,138 @@
 </template>
 
 <script>
-import { getUserList } from "../../api/api";
+import { couponList,couponOpreate } from "../../api/api";
+import qs from "qs";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            tabPosition:"0",
+            // tabPosition:"0",
             data: [],
             total: 0,
             page: 1,
             sels: [], //列表选中项
             formInline: {
                 name: "",
-                createtime: "",
-                brand: ""
+                effectiveTime: "",
+                type:"",
+                send_type:""
             },
             type: [],
-            options: [
-                {
-                    value: 1,
-                    label: "东南",
-                    children: [
-                        {
-                            value: 2,
-                            label: "上海",
-                            children: [
-                                { value: 3, label: "普陀" },
-                                { value: 4, label: "黄埔" },
-                                { value: 5, label: "徐汇" }
-                            ]
-                        },
-                        {
-                            value: 7,
-                            label: "江苏",
-                            children: [
-                                { value: 8, label: "南京" },
-                                { value: 9, label: "苏州" },
-                                { value: 10, label: "无锡" }
-                            ]
-                        },
-                        {
-                            value: 12,
-                            label: "浙江",
-                            children: [
-                                { value: 13, label: "杭州" },
-                                { value: 14, label: "宁波" },
-                                { value: 15, label: "嘉兴" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 17,
-                    label: "西北",
-                    children: [
-                        {
-                            value: 18,
-                            label: "陕西",
-                            children: [
-                                { value: 19, label: "西安" },
-                                { value: 20, label: "延安" }
-                            ]
-                        },
-                        {
-                            value: 21,
-                            label: "新疆维吾尔族自治区",
-                            children: [
-                                { value: 22, label: "乌鲁木齐" },
-                                { value: 23, label: "克拉玛依" }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            createtime: "",
-            listLoading: false
+            listLoading: false,
+            status:1,
+            ids:[]
         };
     },
     methods: {
-        selsChange() {},
-        handleChange() {},
-        onSearch() {},
-        resetField() {},
-        handleEdit() {},
-        handleDel() {},
-        handleObt() {},
-        handleAdj() {},
-        getdata() {
-            let para = {};
-            this.listLoading = true;
-            getUserList(para).then(data => {
-                this.total = res.data.total;
-                this.data = res.data.users;
-                this.listLoading = false;
+         selsChange(val) {
+            this.ids = [];
+            val.map(item => {
+                this.ids.push(item.id);
             });
+        },
+        handleChange() {},
+        handleBatchOver(){
+            const params = {
+                ids:this.ids,
+                action:"end"
+            }
+             couponOpreate(qs.stringify(params)).then(res=>{
+                if(res.data.msg){
+                    this.$message({
+                        type:"success",
+                        message:res.data.msg
+                    })
+                }else{
+                    this.$message({
+                        type:"warning",
+                        message:res.data.msg
+                    })
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        radioChange(val){
+            this.status = val;
+            this.couponList();
+        },
+        onSearch() {
+            this.couponList();
+        },
+        resetField() {
+            this.formInline = {}
+        },
+        handleEdit(id) {
+            this.$router.push('/couponrecord?id='+id)
+        },
+        handleOver(id) {
+            const params = {
+                ids:id,
+                action:"end"
+            }
+            couponOpreate(qs.stringify(params)).then(res=>{
+                if(res.data.msg){
+                    this.$message({
+                        type:"success",
+                        message:res.data.msg
+                    })
+                }else{
+                    this.$message({
+                        type:"warning",
+                        message:res.data.msg
+                    })
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
         },
         handleCurrentChange(val) {
             this.page = val;
-            this.getdata();
         },
         addCoupon(){
            this.$router.push('/editcoupon');
+        },
+        couponList(){
+            let start_time = "";
+            let end_time = "";
+            if (this.formInline.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.formInline.effectiveTime[0],
+                    "yyyy-MM-dd hh:mm:ss"
+                );
+                end_time = utils.formatDate.format(
+                    this.formInline.effectiveTime[1],
+                    "yyyy-MM-dd hh:mm:ss"
+                );
+            }
+            const params = {
+                name: this.formInline.name,
+                type: this.formInline.type,
+                send_type:this.formInline.send_type,
+                start_time,
+                end_time,
+                status: this.status
+            };
+            console.log(params)
+            this.listLoading = true;
+            couponList(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    console.log(data);
+                    this.data = data.lists;
+                    this.total = data.total;
+                    this.listLoading = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     },
-    mounted() {}
+    mounted() {
+        this.couponList()
+    }
 };
 </script>
 

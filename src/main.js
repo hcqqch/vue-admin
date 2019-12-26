@@ -5,10 +5,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 // import 'element-ui/lib/theme-default/index.css'
 // import './assets/theme/theme-green/index.css'
+Vue.config.productionTip = false;
 import VueRouter from 'vue-router'
 import store from './vuex/store'
 import Vuex from 'vuex'
 import routes from './routes'
+// import axios from './axios'
 // import Mock from './mock'
 // Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'

@@ -56,7 +56,7 @@
         </div>
 
         <!-- 规格展示 -->
-        <div class="example">
+        <!-- <div class="example">
             <h4 class="title">
                 规格展示
                 <el-button
@@ -80,7 +80,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div>-->
 
         <!-- 规格明细 -->
         <div class="example">
@@ -155,6 +155,17 @@
                         </td>
                         <td>
                             <!-- 图片 -->
+                            <el-upload
+                                class="avatar-uploader"
+                                action="http://up.qiniup.com"
+                                :data="qiniuData"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess2"
+                                :before-upload="beforeAvatarUpload"
+                            >
+                                <img v-if="childProductArray[index].specDrawing" :src="childProductArray[index].specDrawing" class="avatar" />
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
                         </td>
                         <td>
                             <el-switch
@@ -173,11 +184,7 @@
                                 <li class="set-item" @click="openBatch('childProductOrigin')">原价</li>
                             </ul>
                             <div class="set-form" v-else>
-                                <el-input
-                                    size="mini"
-                                    v-model.number="batchValue"
-                                    placeholder="输入要设置的数量"
-                                ></el-input>
+                                <el-input size="mini" v-model.number="batchValue" placeholder="请输入"></el-input>
                                 <i class="set-btn blue el-icon-check" @click="setBatch"></i>
                                 <i class="set-btn red el-icon-close" @click="cancelBatch"></i>
                             </div>
@@ -191,7 +198,8 @@
             <h4 style="margin-top:20px" class="title">默认规格图</h4>
             <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="http://up.qiniup.com"
+                :data="qiniuData"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
@@ -199,24 +207,37 @@
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-			<h4 style="margin-top:20px" class="title">默认价格</h4>
-			价格<el-input v-model="defaultPrice" :disabled="isCanSetting" style="width:40%;margin-left:10px"></el-input>
-			<h4 style="margin-top:20px" class="title">默认库存</h4>
-			库存<el-input v-model="defaultSku" :disabled="isCanSetting" style="width:40%;margin-left:10px"></el-input>
+            <h4 style="margin-top:20px" class="title">默认价格</h4>
+            <el-form-item label="价格" required label-width="50px">
+                <el-input
+                    v-model="defaultPrice"
+                    :disabled="isCanSetting"
+                    style="width:40%;margin-left:10px"
+                ></el-input>
+            </el-form-item>
+            <h4 style="margin-top:20px" class="title">默认库存</h4>
+            <el-form-item label="库存" required label-width="50px">
+                <el-input
+                    v-model="defaultSku"
+                    :disabled="isCanSetting"
+                    style="width:40%;margin-left:10px"
+                ></el-input>
+            </el-form-item>
+            <el-button style="margin-top:20px" type="primary" @click="showinfo">确认库存信息</el-button>
         </div>
 
         <div class="example">
-            <h4 class="title">数据格式</h4>
-            <div class="code-area">
+            <!-- <h4 class="title">数据格式</h4> -->
+            <!-- <div class="code-area">
                 <div v-for="(item, index) in childProductArray" :key="index">{{ item }}</div>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
 
 <script>
 // import { getAddgoodsInfo, submitAddgoods } from "../../api/api";
-// import axios from "axios";
+import axios from "axios";
 // import qs from "qs";
 
 // 为Object添加一个原型方法，判断两个对象是否相等
@@ -282,58 +303,59 @@ function objEquals(object1, object2) {
     return true;
 }
 
-
 export default {
     name: "skuwrap",
 
-    props:["skuOptions"],
+    props: ["skuOptions","specification","childProductArray"],
 
     data() {
         return {
             // 显示规格列表
             specificationStatus: false,
             // 规格
-            specification: [
-                // {
-                //     name: "颜色",
-                //     value: ["黑色", "白色", "蓝色"]
-                // }
-            ],
+            // specification: [
+            //     // {
+            //     //     name: "颜色",
+            //     //     value: ["黑色", "白色", "蓝色"]
+            //     // }
+            // ],
             //规格下拉数据
             // skuOptions: [],
             // 子规格
-            childProductArray: [
-                {
-                    childProductId: 0,
-                    childProductSpec: { 颜色: "黑色" },
-                    childProductNo: "PRODUCTNO_0", //规格编码
-                    childProductStock: 0, //库存
-                    childProductPrice: 0, //销售价
-                    childProductCost: 0, //成本价
-                    childProductOrigin: 0, //原价
-                    isUse: true //是否启用
-                },
-                {
-                    childProductId: 0,
-                    childProductSpec: { 颜色: "白色" },
-                    childProductNo: "PRODUCTNO_1",
-                    childProductStock: 0,
-                    childProductPrice: 0,
-                    childProductCost: 0,
-                    childProductOrigin: 0,
-                    isUse: true
-                },
-                {
-                    childProductId: 0,
-                    childProductSpec: { 颜色: "蓝色" },
-                    childProductNo: "PRODUCTNO_2",
-                    childProductStock: 0,
-                    childProductPrice: 0,
-                    childProductCost: 0,
-                    childProductOrigin: 0,
-                    isUse: true
-                }
-            ],
+            // childProductArray: [
+            //     // {
+            //     //     childProductId: 0,
+            //     //     childProductSpec: { 颜色: "黑色" },
+            //     //     childProductNo: "PRODUCTNO_0", //规格编码
+            //     //     childProductStock: 0, //库存
+            //     //     childProductPrice: 0, //销售价
+            //     //     childProductCost: 0, //成本价
+            //     //     childProductOrigin: 0, //原价
+            //     //     specDrawing:"",//规格图
+            //     //     isUse: true //是否启用
+            //     // },
+            //     // {
+            //     //     childProductId: 0,
+            //     //     childProductSpec: { 颜色: "白色" },
+            //     //     childProductNo: "PRODUCTNO_1",
+            //     //     childProductStock: 0,
+            //     //     childProductPrice: 0,
+            //     //     childProductCost: 0,
+            //     //     childProductOrigin: 0,
+            //     //     specDrawing:"",//规格图
+            //     //     isUse: true
+            //     // },
+            //     // {
+            //     //     childProductId: 0,
+            //     //     childProductSpec: { 颜色: "蓝色" },
+            //     //     childProductNo: "PRODUCTNO_2",
+            //     //     childProductStock: 0,
+            //     //     childProductPrice: 0,
+            //     //     childProductCost: 0,
+            //     //     childProductOrigin: 0,
+            //     //     isUse: true
+            //     // }
+            // ],
             // 用来存储要添加的规格属性
             addValues: [],
             // 默认商品编号
@@ -342,9 +364,16 @@ export default {
             isSetListShow: true,
             batchValue: "", // 批量设置所绑定的值
             currentType: "", // 要批量设置的类型
-			imageUrl: "", //默认规格图
-			defaultPrice:"",//默认价格
-			defaultSku:"",//默认库存
+            defaultPrice: "", //默认价格
+            defaultSku: "", //默认库存
+
+            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            qiniuData: { key: "", token: "" },
+            imageUrl: "", //默认规格图
+            Global: {
+                dataUrl: "http://office.pintaihui.cn"
+            },
+            specDrawing:""//详细规格图
         };
     },
 
@@ -352,14 +381,22 @@ export default {
         // 所有sku的id
         stockSpecArr() {
             return this.childProductArray.map(item => item.childProductSpec);
-		},
-		//默认价格库存是否可编辑
-		isCanSetting(){
-			return this.specification.length == 0?false:true
         },
+        //默认价格库存是否可编辑
+        isCanSetting() {
+            return this.specification.length == 0 ? false : true;
+        }
     },
 
     methods: {
+        // 向父组件传递数据
+        showinfo() {
+            this.$message("已确认");
+            this.$emit("info", this.specification);
+            this.$emit("infos", this.childProductArray);
+            this.$emit("imageInfo", this.imageUrl);
+            console.log(this.imageUrl);
+        },
         // 添加规格项目
         addSpec() {
             if (this.specification.length < 4) {
@@ -482,6 +519,12 @@ export default {
             for (let i = 0; i < this.countSum(0); i++) {
                 this.changeStock(option, i, stockCopy);
             }
+
+            // if(option = "del"){
+            //     this.childProduct = childProduct;
+            //     this.childProductId  = childProductId;
+            //     if(this.changeStock = this.)
+            // }
         },
 
         /**
@@ -498,6 +541,8 @@ export default {
                 childProductStock: 0,
                 childProductPrice: 0,
                 childProductCost: 0,
+                childProductOrigin: 0, //原价
+                specDrawing: "", //规格图
                 isUse: true
             };
 
@@ -619,12 +664,22 @@ export default {
             this.currentType = "";
             this.isSetListShow = true;
         },
-		//上传成功的回调
-        handleAvatarSuccess(res, file) {
-            // this.imageUrl = URL.createObjectURL(file.raw);
-            this.imageUrl = URL.createObjectURL(file.raw);            
+        //上传成功的回调
+        handleAvatarSuccess: function(res, file) {
+            console.log(res.key);
+            this.imageUrl = this.upload_qiniu_addr + res.key;
+            console.log(this.imageUrl);
         },
-		// 上传之前的回调
+        handleAvatarSuccess2: function(res, file) {
+            console.log("ss")
+            // console.log(index)
+            console.log(index);
+            // console.log(res)
+            // childProductArray[index].specDrawing = this.upload_qiniu_addr + res.key;
+            // this.row = this.upload_qiniu_addr + res.key;
+            // console.log(this.row);
+        },
+        // 上传之前的回调
         beforeAvatarUpload(file) {
             const isJPG = file.type === "image/jpeg";
             const isLt2M = file.size / 1024 / 1024 < 2;
@@ -636,8 +691,30 @@ export default {
                 this.$message.error("上传头像图片大小不能超过 2MB!");
             }
             return isJPG && isLt2M;
+        },
+        getQiniuToken: function() {
+            const _this = this;
+            axios
+                .post(this.Global.dataUrl + "/api/v1/qiniu/token")
+                .then(function(res) {
+                    console.log(res);
+                    if (res.data) {
+                        console.log(res.data.token);
+                        _this.qiniuData.token = res.data.data.token;
+                    } else {
+                        _this.$message({
+                            message: res.data.msg,
+                            duration: 2000,
+                            type: "warning"
+                        });
+                    }
+                });
         }
     },
+
+    created() {
+        this.getQiniuToken();
+    }
 };
 </script>
 

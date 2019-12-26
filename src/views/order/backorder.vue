@@ -2,72 +2,53 @@
     <!-- 商品订单 -->
     <section>
         <!--工具条-->
-        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        <div class="toolbar">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-col :span="6">
-                    <el-form-item label="订单号">
-                        <el-input v-model="formInline.name" placeholder="订单号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="买家账号">
-                        <el-input v-model="formInline.num" placeholder="买家账号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="支付时间">
-                        <el-date-picker
-                            v-model="createtime"
-                            type="daterange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                        ></el-date-picker>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="支付方式">
-                        <el-select v-model="formInline.brand" placeholder>
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="商品名称">
-                        <el-input v-model="formInline.num" placeholder="姓名/手机号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="收货人">
-                        <el-input v-model="formInline.num" placeholder="快递单号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="快递单号">
-                        <el-input v-model="formInline.num" placeholder="快递单号"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item>
-                        <el-button type="primary" @click="onSearch">查询</el-button>
-                        <el-button type="primary" @click="resetField">重置</el-button>
-                    </el-form-item>
-                </el-col>
+                <el-form-item label="订单号">
+                    <el-input v-model="formInline.name" placeholder="订单号"></el-input>
+                </el-form-item>
+
+                <el-form-item label="买家账号">
+                    <el-input v-model="formInline.num" placeholder="买家账号"></el-input>
+                </el-form-item>
+
+                <el-form-item label="支付时间">
+                    <el-date-picker
+                        v-model="createtime"
+                        type="daterange"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                    ></el-date-picker>
+                </el-form-item>
+
+                <el-form-item label="支付方式">
+                    <el-select v-model="formInline.brand" placeholder>
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="商品名称">
+                    <el-input v-model="formInline.num" placeholder="姓名/手机号"></el-input>
+                </el-form-item>
+
+                <el-form-item label="收货人">
+                    <el-input v-model="formInline.num" placeholder="快递单号"></el-input>
+                </el-form-item>
+
+                <el-form-item label="快递单号">
+                    <el-input v-model="formInline.num" placeholder="快递单号"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="onSearch">查询</el-button>
+                    <el-button type="primary" @click="resetField">重置</el-button>
+                </el-form-item>
             </el-form>
-        </el-col>
+        </div>
 
         <!--列表-->
-        <el-radio-group v-model="tabPosition" style="margin-bottom: 10px;">
-            <el-radio-button label="0">所有订单</el-radio-button>
-            <el-radio-button label="1">待支付</el-radio-button>
-            <el-radio-button label="2">待发货</el-radio-button>
-            <el-radio-button label="3">待收货</el-radio-button>
-            <el-radio-button label="4">待确认</el-radio-button>
-            <el-radio-button label="5">交易成功</el-radio-button>
-            <el-radio-button label="6">交易关闭</el-radio-button>
-            <el-radio-button label="7">售后订单</el-radio-button>
-        </el-radio-group>
         <el-table
             :data="data"
             highlight-current-row

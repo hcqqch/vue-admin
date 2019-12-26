@@ -3,20 +3,19 @@
         <!--人员管理-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-col :span="6">
-                    <el-form-item label="用户名">
-                        <el-input v-model="formInline.name" placeholder="请输入用户名"></el-input>
-                    </el-form-item>
-                </el-col>
-
-                <el-col :span="6">
-                    <el-form-item label="部门">
-                        <el-select v-model="formInline.brand" placeholder="部门">
-                            <el-option label="部门一" value="shanghai"></el-option>
-                            <el-option label="部门二" value="beijing"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
+                <el-form-item label="用户名">
+                    <el-input v-model="formInline.name" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="部门">
+                    <el-select v-model="formInline.department_id" placeholder="部门">
+                        <el-option
+                            v-for="(item,i) in deptOptions"
+                            :key="i"
+                            :label="item.name"
+                            :value="item.id"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSearch">查询</el-button>
                     <el-button type="primary" @click="resetField">重置</el-button>
@@ -25,26 +24,15 @@
         </el-col>
 
         <!--列表-->
-        <el-table
-            :data="data"
-            highlight-current-row
-            v-loading="listLoading"
-            @selection-change="selsChange"
-            style="width: 100%;"
-        >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="用户名" width sortable></el-table-column>
-            <el-table-column prop="createtime" label="联系电话" width sortable></el-table-column>
-            <el-table-column prop="name" label="所属部门" width sortable></el-table-column>
-            <el-table-column prop="price" label="创建时间" width sortable></el-table-column>
+        <el-table :data="data" highlight-current-row v-loading="listLoading" style="width: 100%;">
+            <el-table-column prop="account" label="用户名" width sortable></el-table-column>
+            <el-table-column prop="mobile" label="联系电话" width sortable></el-table-column>
+            <el-table-column prop="department_name" label="所属部门" width sortable></el-table-column>
+            <el-table-column prop="created_at" label="创建时间" width sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
-                    >删除</el-button>
+                    <el-button size="small" @click="handleEdit(scope.row.id)">编辑</el-button>
+                    <el-button size="small" type="danger" @click="handleDel(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -61,38 +49,47 @@
             ></el-pagination>
         </el-col>
 
-        <el-dialog title="添加人员" :visible.sync="dialogFormVisible">
+        <el-dialog width="30%" title="添加人员" :visible.sync="dialogFormVisible">
             <el-form :model="form">
                 <el-form-item label="用户名" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-input v-model="form.account" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-input type="password" v-model="form.re_password" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-input v-model="form.mobile" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="所属部门" :label-width="formLabelWidth">
-                    <el-checkbox-group v-model="checkList">
-                        <el-checkbox label="客服"></el-checkbox>
-                        <el-checkbox label="管理员"></el-checkbox>
-                        <el-checkbox label="经理"></el-checkbox>
+                    <el-checkbox-group v-model="form.department_id">
+                        <el-checkbox
+                            v-for="(item,i) in checkList"
+                            :key="i"
+                            :label="item.id"
+                        >{{item.name}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button type="primary" @click="submitPerson">确 定</el-button>
             </div>
         </el-dialog>
     </section>
 </template>
 
 <script>
-import { getUserList } from "../../api/api";
+import {
+    addEmployee,
+    updateEmployee,
+    getUpdateEmployee,
+    getEmployeeList,
+    delEmployee,
+    getDeptList
+} from "../../api/api";
 export default {
     data() {
         return {
@@ -101,104 +98,171 @@ export default {
             total: 0,
             page: 1,
             sels: [], //列表选中项
+            form: {
+                account: "",
+                password: "",
+                re_password: "",
+                mobile: "",
+                department_id: []
+            },
             formInline: {
                 name: "",
-                createtime: "",
-                brand: ""
+                department_id: ""
             },
             type: [],
-            options: [
-                {
-                    value: 1,
-                    label: "东南",
-                    children: [
-                        {
-                            value: 2,
-                            label: "上海",
-                            children: [
-                                { value: 3, label: "普陀" },
-                                { value: 4, label: "黄埔" },
-                                { value: 5, label: "徐汇" }
-                            ]
-                        },
-                        {
-                            value: 7,
-                            label: "江苏",
-                            children: [
-                                { value: 8, label: "南京" },
-                                { value: 9, label: "苏州" },
-                                { value: 10, label: "无锡" }
-                            ]
-                        },
-                        {
-                            value: 12,
-                            label: "浙江",
-                            children: [
-                                { value: 13, label: "杭州" },
-                                { value: 14, label: "宁波" },
-                                { value: 15, label: "嘉兴" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 17,
-                    label: "西北",
-                    children: [
-                        {
-                            value: 18,
-                            label: "陕西",
-                            children: [
-                                { value: 19, label: "西安" },
-                                { value: 20, label: "延安" }
-                            ]
-                        },
-                        {
-                            value: 21,
-                            label: "新疆维吾尔族自治区",
-                            children: [
-                                { value: 22, label: "乌鲁木齐" },
-                                { value: 23, label: "克拉玛依" }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            deptOptions: [],
             createtime: "",
             listLoading: false,
             formLabelWidth: "100px",
             dialogFormVisible: false,
-            form: {},
-            checkList:[]
+            checkList: [],
+            isEdit: false,
+            formList: [],
+            pid:""
         };
     },
     methods: {
-        selsChange() {},
-        handleChange() {},
-        onSearch() {},
-        resetField() {},
-        handleEdit() {},
-        handleDel() {},
-        handleObt() {},
-        handleAdj() {},
-        getdata() {
-            let para = {};
-            this.listLoading = true;
-            getUserList(para).then(data => {
-                this.total = res.data.total;
-                this.data = res.data.users;
-                this.listLoading = false;
-            });
+        onSearch() {
+            this.getEmployeeList();
+        },
+        resetField() {
+            this.formInline = {};
+        },
+        handleEdit(id) {
+            console.log(id);
+            this.dialogFormVisible = true;
+            this.isEdit = true;
+            this.pid = id;
+            const params = {
+                id
+            };
+            getUpdateEmployee(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.form.account = data.account;
+                    this.form.mobile = data.mobile;
+                    if (data.department_id.length > 1) {
+                        this.form.department_id = data.department_id
+                            .split(",")
+                            .map(Number);
+                    } else {
+                        this.form.department_id = [Number(data.department_id)];
+                    }
+                    // console.log(department_id) = [Number(data.department_id)]
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        handleDel(id) {
+            const params = {
+                id
+            };
+            delEmployee(params)
+                .then(res => {
+                    if (res.data.code == 200) {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "success"
+                        });
+                    } else {
+                        this.$message({
+                            message: res.data.msg,
+                            type: "warning"
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            this.getEmployeeList();
         },
         handleCurrentChange(val) {
             this.page = val;
-            this.getdata();
         },
         addEmployee() {
             this.dialogFormVisible = true;
+            this.isEdit = false;
+            this.pid = ""
+        },
+        submitPerson() {
+            this.dialogFormVisible = false;
+            const params = {
+                account: this.form.account,
+                password: this.form.password,
+                re_password: this.form.re_password,
+                mobile: this.form.mobile,
+                department_id: this.form.department_id.toString()
+            };
+            if (this.isEdit) {
+                updateEmployee({...params,id:this.pid})
+                    .then(res => {
+                        if (res.data.code == 200) {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "success"
+                            });
+                        } else {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "warning"
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            } else {
+                addEmployee(params)
+                    .then(res => {
+                        if (res.data.code == 200) {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "success"
+                            });
+                        } else {
+                            this.$message({
+                                message: res.data.msg,
+                                type: "warning"
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        },
+        getDeptList() {
+            getDeptList()
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.checkList = data;
+                    this.deptOptions = data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        getEmployeeList() {
+            this.listLoading = true;
+            const params = {
+                name: this.formInline.name,
+                department_id: this.formInline.department_id
+            };
+            getEmployeeList(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.data = data.lists;
+                    this.total = data.total;
+                    this.listLoading = false;
+                })
+                .catch();
         }
     },
-    mounted() {}
+    mounted() {
+        this.getDeptList();
+        this.getEmployeeList();
+    }
 };
 </script>
 

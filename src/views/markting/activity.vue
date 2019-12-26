@@ -1,5 +1,5 @@
 <template>
-<!-- 满减活动 -->
+    <!-- 满减活动 -->
     <section>
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
@@ -11,7 +11,7 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="活动类型">
-                        <el-select v-model="formInline.brand" placeholder="领取方式">
+                        <el-select v-model="formInline.product_type" placeholder="领取方式">
                             <el-option label="手工领取" value="shanghai"></el-option>
                             <el-option label="自动领取" value="beijing"></el-option>
                         </el-select>
@@ -20,7 +20,7 @@
                 <el-col :span="12">
                     <el-form-item label="有效期">
                         <el-date-picker
-                            v-model="createtime"
+                            v-model="formInline.effectiveTime"
                             type="daterange"
                             range-separator="至"
                             start-placeholder="有效期"
@@ -36,12 +36,12 @@
         </el-col>
 
         <!--列表-->
-        <el-radio-group v-model="tabPosition" style="margin-bottom: 10px;">
+        <el-radio-group @change="changeRadio" v-model="status" style="margin-bottom: 10px;">
             <el-radio-button label="0">进行活动中</el-radio-button>
             <el-radio-button label="1">未开始</el-radio-button>
             <el-radio-button label="2">已结束</el-radio-button>
         </el-radio-group>
-       <el-button class="addCouponBtn" @click="addActivity" type="primary">新增活动</el-button>
+        <el-button class="addCouponBtn" @click="addActivity" type="primary">新增活动</el-button>
         <el-table
             :data="data"
             highlight-current-row
@@ -50,22 +50,56 @@
             style="width: 100%;"
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="num" label="活动名称" width="100" sortable></el-table-column>
-            <el-table-column prop="createtime" label="生成时间" width="100" sortable></el-table-column>
-            <el-table-column prop="name" label="有效期" width="100" sortable></el-table-column>
-            <el-table-column prop="price" label="优惠方式" width="120" sortable></el-table-column>
-            <el-table-column prop="stock" label="叠加优惠券" min-width="180" sortable></el-table-column>
-            <el-table-column prop="views" label="参与商品" min-width="180" sortable></el-table-column>
-            <el-table-column prop="sales" label="参与限制" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="已参与" min-width="180" sortable></el-table-column>
-            <el-table-column prop="addr" label="活动状态" min-width="180" sortable></el-table-column>
+            <el-table-column prop="name" label="活动名称" width sortable></el-table-column>
+            <el-table-column prop="created_at" label="生成时间" width="160" sortable></el-table-column>
+            <el-table-column prop="name" label="有效期" width="300" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.start_time}}-{{scope.row.end_time}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="condition_data" label="优惠方式" width sortable>
+                <template slot-scope="scope">
+                    <span v-if="scope.row.condition_type==1">
+                        <div
+                            v-for="(item,i) in scope.row.condition_data"
+                            :key="i"
+                        >满{{item.limit}}元减{{item.decrease}}元</div>
+                    </span>
+                    <span v-if="scope.row.condition_type==2">
+                        <div
+                            v-for="(item,i) in scope.row.condition_data"
+                            :key="i"
+                        >满{{item.limit}}件减{{item.decrease}}元</div>
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="add_coupon" label="叠加优惠券" min-width sortable>
+                <template slot-scope="scope">
+                    <span v-if="scope.row.add_coupon==1">否</span>
+                    <span v-if="scope.row.add_coupon==2">是</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="product_count" label="参与商品" sortable>
+                <template slot-scope="scope">
+                    <span v-if="scope.row.product_type==1">全部商品</span>
+                    <span v-if="scope.row.product_type==2">{{scope.row.product_count}}件商品</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="limit" label="参与限制" sortable>
+                <template slot-scope="scope">
+                    <span v-if="scope.row.limit==0">不限制</span>
+                    <span v-if="scope.row.limit>0">{{scope.row.limit}}次/每人</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="join_count" label="已参与" sortable></el-table-column>
+            <el-table-column prop="status" label="活动状态" sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button
                         size="small"
                         type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
+                        @click="handleOver(scope.row.id)"
                     >结束</el-button>
                 </template>
             </el-table-column>
@@ -73,7 +107,7 @@
 
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-            <el-button type="">批量结束</el-button>
+            <el-button @click="batchOver" type>批量结束</el-button>
             <el-pagination
                 layout="prev, pager, next"
                 @current-change="handleCurrentChange"
@@ -86,89 +120,87 @@
 </template>
 
 <script>
-import { getUserList } from "../../api/api";
+import { fullScaleList, fullScaleAdd, OverFullScale } from "../../api/api";
+import qs from "qs";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            tabPosition:"0",
             data: [],
             total: 0,
             page: 1,
             sels: [], //列表选中项
             formInline: {
                 name: "",
-                createtime: "",
-                brand: ""
+                product_type: "",
+                effectiveTime: ""
             },
+            status: 0,
             type: [],
-            options: [
-                {
-                    value: 1,
-                    label: "东南",
-                    children: [
-                        {
-                            value: 2,
-                            label: "上海",
-                            children: [
-                                { value: 3, label: "普陀" },
-                                { value: 4, label: "黄埔" },
-                                { value: 5, label: "徐汇" }
-                            ]
-                        },
-                        {
-                            value: 7,
-                            label: "江苏",
-                            children: [
-                                { value: 8, label: "南京" },
-                                { value: 9, label: "苏州" },
-                                { value: 10, label: "无锡" }
-                            ]
-                        },
-                        {
-                            value: 12,
-                            label: "浙江",
-                            children: [
-                                { value: 13, label: "杭州" },
-                                { value: 14, label: "宁波" },
-                                { value: 15, label: "嘉兴" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 17,
-                    label: "西北",
-                    children: [
-                        {
-                            value: 18,
-                            label: "陕西",
-                            children: [
-                                { value: 19, label: "西安" },
-                                { value: 20, label: "延安" }
-                            ]
-                        },
-                        {
-                            value: 21,
-                            label: "新疆维吾尔族自治区",
-                            children: [
-                                { value: 22, label: "乌鲁木齐" },
-                                { value: 23, label: "克拉玛依" }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            createtime: "",
-            listLoading: false
+            listLoading: false,
+            ids:[]
         };
     },
     methods: {
-        selsChange() {},
+        selsChange(val) {
+            this.ids = [];
+            val.map(item => {
+                this.ids.push(item.id);
+            });
+            console.log(this.ids);
+        },
         handleChange() {},
-        onSearch() {},
-        resetField() {},
-        handleEdit() {},
-        handleDel() {},
+        onSearch() {
+            this.fullScaleList();
+        },
+        resetField() {
+            this.formInline = {};
+        },
+        handleEdit(index, row) {
+            let id = row.id;
+            this.$router.push("/editactivity?id=" + row.id);
+        },
+    
+        handleOver(id) {
+            const params = {
+                id
+            }
+            OverFullScale(qs.stringify(params)).then(res=>{
+                if(res.data.msg){
+                    this.$message({
+                        message:res.data.msg,
+                        type:'success'
+                    })
+                }else{
+                   this.$message({
+                        message:res.data.msg,
+                        type:'warning'
+                    }) 
+                }
+            }).catch()
+            this.fullScaleList();
+        },
+        batchOver(){
+            const params = {
+                id:this.ids.toString()
+            }
+            OverFullScale(qs.stringify(params)).then(res=>{
+                if(res.data.msg){
+                    this.$message({
+                        message:res.data.msg,
+                        type:'success'
+                    })
+                }else{
+                   this.$message({
+                        message:res.data.msg,
+                        type:'warning'
+                    }) 
+                }
+            }).catch()
+            this.fullScaleList();
+        },
+
         handleObt() {},
         handleAdj() {},
         getdata() {
@@ -182,18 +214,59 @@ export default {
         },
         handleCurrentChange(val) {
             this.page = val;
-            this.getdata();
+            this.fullScaleList();
         },
-        addActivity(){
-            this.$router.push('./editactivity');
+        addActivity() {
+            this.$router.push("./editactivity");
+        },
+        changeRadio(val) {
+            this.fullScaleList();
+        },
+        fullScaleList() {
+            let start_time = "";
+            let end_time = "";
+            if (this.formInline.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.formInline.effectiveTime[0],
+                    "yyyy-MM-dd"
+                );
+                end_time = utils.formatDate.format(
+                    this.formInline.effectiveTime[1],
+                    "yyyy-MM-dd"
+                );
+            }
+            const params = {
+                name: this.formInline.name,
+                product_type: this.formInline.product_type,
+                start_time,
+                end_time,
+                status: this.status
+            };
+            this.listLoading = true;
+            fullScaleList(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    console.log(data);
+                    this.data = data.lists;
+                    this.total = data.total;
+                    this.listLoading = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        OverFullScale(){
+            OverFullScale
         }
     },
-    mounted() {}
+    mounted() {
+        this.fullScaleList();
+    }
 };
 </script>
 
 <style scoped>
-.addCouponBtn{
+.addCouponBtn {
     position: relative;
     top: -4px;
     left: 10px;

@@ -164,7 +164,7 @@ export default {
                 updateTag(qs.stringify(params))
                     .then(res => {
                         console.log(res.data);
-                        if (res.data.msg) {
+                        if (res.data.code==200) {
                             this.$message({
                                 message: res.data.msg,
                                 type: "success"
@@ -188,7 +188,7 @@ export default {
             };
             deleteTag(qs.stringify(params))
                 .then(res => {
-                    if (res.data.msg) {
+                    if (res.data.code ==200) {
                         this.$message({
                             message: res.data.msg,
                             type: "success"

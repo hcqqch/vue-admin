@@ -379,10 +379,15 @@ export default {
                     }
                 )
                     .then(res => {
-                        if (res.data.msg) {
+                        if (res.data.code==200) {
                             this.$message({
                                 message: res.data.msg,
                                 type: "success"
+                            });
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: "warning"
                             });
                         }
                     })
@@ -407,10 +412,15 @@ export default {
                     }
                 )
                     .then(res => {
-                        if (res.data.msg) {
+                        if (res.data.code==200) {
                             this.$message({
                                 message: res.data.msg,
                                 type: "success"
+                            });
+                        }else{
+                            this.$message({
+                                message: res.data.msg,
+                                type: "warning"
                             });
                         }
                     })
