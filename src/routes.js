@@ -5,7 +5,7 @@ import Main from './views/Main.vue'
 import ShopHome from './views/shop/shophome.vue'
 import ShopInfo from './views/shop/shopinfo.vue'
 import Survey from './views/shop/survey.vue'
-import ChatRoom from './views/commodity/chatroom.vue'
+
 import CommodityList from './views/commodity/commoditylist.vue'
 import AddCommodity from './views/commodity/addcommodity.vue'
 import Classification from './views/commodity/classification.vue'
@@ -17,6 +17,7 @@ import TemplateList from './views/commodity/templatelist.vue'
 import CustomClassify from './views/commodity/customclassify.vue'
 import Order from './views/order/Order.vue'
 import BackOrder from './views/order/backorder.vue'
+import BackApply from './views/order/backapply.vue'
 import CoupleList from './views/markting/coupleList.vue'
 import CouponRecord from './views/markting/couponRecord.vue'
 import EditCoupon from './views/markting/editcoupon.vue'
@@ -94,7 +95,8 @@ let routes = [{
         iconCls: 'el-icon-my-order',
         children: [
             { path: '/order', component: Order, name: '订单查询' },
-            { path: '/backorder', component: BackOrder, name: '退货订单' }
+            { path: '/backorder', component: BackOrder, name: '退货订单' },
+            { path: '/backapply', component: BackApply, name: '申请详情', hidden: true },
         ]
     },
     {

@@ -43,7 +43,6 @@ import {
     getInformation
 } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -52,11 +51,11 @@ export default {
             isCircle: true, //是否显示商圈
             active_plate: "", //活动模块
             desc: "", //店铺底部说明
-            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            upload_qiniu_addr: "http://img.pintaihui.cn/",
             qiniuData: { key: "", token: "" },
             imageUrl: "",
             Global: {
-                dataUrl: "http://office.pintaihui.cn"
+                dataUrl: "https://office.pintaihui.cn"
             }
         };
     },
@@ -96,6 +95,8 @@ export default {
             }
         },
         handleAvatarSuccess: function(res, file) {
+            // console.log(res.key);
+    
             console.log(res.key);
             this.imageUrl = this.upload_qiniu_addr + res.key;
             console.log(this.imageUrl);
@@ -115,8 +116,7 @@ export default {
                 active_plate: this.active_plate,
                 footer_description: this.desc
             };
-            console.log(qs.stringify(params));
-            submitHomepageinfo(qs.stringify(params), config)
+            submitHomepageinfo(params)
                 .then(res => {
                     if (res.data.code == 200) {
                         this.$message({

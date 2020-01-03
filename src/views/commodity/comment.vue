@@ -27,14 +27,14 @@
 
         <!--列表-->
         <el-table :data="data" highlight-current-row v-loading="listLoading" style="width: 100%;">
-            <el-table-column prop="goods_name" label="商品名称" width="100" sortable></el-table-column>
-            <el-table-column prop="norms_name" label="规格" width="100" sortable></el-table-column>
-            <el-table-column prop="paytime" label="下单时间" width="100" sortable></el-table-column>
-            <el-table-column prop="confirm_time" label="收货时间" width="120" sortable></el-table-column>
-            <el-table-column prop="content" label="评论内容" min-width="180" sortable></el-table-column>
+            <el-table-column prop="goods_name" label="商品名称" width="100"></el-table-column>
+            <el-table-column prop="norms_name" label="规格" width="100"></el-table-column>
+            <el-table-column prop="paytime" label="下单时间" width="100"></el-table-column>
+            <el-table-column prop="confirm_time" label="收货时间" width="120"></el-table-column>
+            <el-table-column prop="content" label="评论内容" min-width="180"></el-table-column>
             <el-table-column prop="created_at" label="评论时间" min-width="180" sortable></el-table-column>
-            <el-table-column prop="reply" label="掌柜回复" min-width="180" sortable></el-table-column>
-            <el-table-column prop="reply_user_name" label="回复人" min-width="180" sortable></el-table-column>
+            <el-table-column prop="reply" label="掌柜回复" min-width="180"></el-table-column>
+            <el-table-column prop="reply_user_name" label="回复人" min-width="180"></el-table-column>
             <el-table-column prop="reply_at" label="回复时间" min-width="180" sortable></el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">

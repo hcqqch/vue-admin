@@ -69,7 +69,6 @@
 
 <script>
 import { couponRecordList } from "../../api/api";
-import qs from "qs";
 import utils from "@/common/js/util";
 
 export default {

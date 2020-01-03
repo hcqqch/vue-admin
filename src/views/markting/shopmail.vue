@@ -63,7 +63,6 @@
 <script>
 import elementChinaCheckbox from "element-china-checkbox";
 import { editFreightTmplate, addShopmail, getShopmail } from "../../api/api";
-import qs from "qs";
 export default {
     data() {
         return {
@@ -145,18 +144,21 @@ export default {
         handleCurrentChange() {},
         submit() {
             const params = {
-                // data: this.areaData
-                firstName: [1,2],
-                lastName: "Flintstone"
+                data: this.areaData
+                // firstName: '1,2',
+                // lastName: "Flintstone"
             };
 
             console.log(params);
 
             addShopmail(
                 // {data:JSON.stringify(params)},
-                
-                qs.stringify(params),
-                { arrayFormat: 'repeat' }
+                params,
+                {
+                    headers:{
+                        'Content-type':'application/json'
+                    }
+                }
                 // {
                 //     transformRequest: [
                 //         function(data) {

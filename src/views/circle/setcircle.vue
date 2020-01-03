@@ -125,7 +125,6 @@
 import { setCircle, getCircleInfo } from "../../api/api";
 import utils from "@/common/js/util";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -143,13 +142,13 @@ export default {
             },
             dialogFormVisible: false,
             upload_qiniu_addr: "http://video.pintaihui.cn/",
-            upload_qiniu_addr2: "http://q1ecexot0.bkt.clouddn.com/",
+            upload_qiniu_addr2: "http://img.pintaihui.cn/",
             qiniuData: { key: "", token: "" },
             imageUrl1: "",
             imageUrl2: "",
             videosrc: "",
             Global: {
-                dataUrl: "http://office.pintaihui.cn/api/v1"
+                dataUrl: "https://office.pintaihui.cn/api/v1"
             },
             img_json: [],
             link_json: []

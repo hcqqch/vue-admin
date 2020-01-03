@@ -54,25 +54,25 @@
             style="width: 100%;"
         >
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="goods_coding" label="商品编号" width sortable></el-table-column>
-            <el-table-column prop="create_time" label="创建时间" width="140px" sortable></el-table-column>
-            <el-table-column prop="goods_name" label="商品名称" width sortable>
+            <el-table-column prop="goods_coding" label="商品编号" width></el-table-column>
+            <el-table-column prop="create_time" label="创建时间" width="140px"></el-table-column>
+            <el-table-column prop="goods_name" label="商品名称" width>
                 <template slot-scope="scope">
                     <img style="width:30px;height:30px" :src="scope.row.img" alt />
                     <span>{{scope.row.goods_name}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="goods_price" label="价格" width sortable></el-table-column>
-            <el-table-column prop="goods_stock" label="库存" sortable>
+            <el-table-column prop="goods_price" label="价格" width></el-table-column>
+            <el-table-column prop="goods_stock" label="库存">
                 <template slot-scope="scope">
                     <div>{{scope.row.goods_stock}}</div>
                     <div>{{scope.row.goods_norms_stock}}种规格缺货</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="visits_total" label="访问量" sortable></el-table-column>
-            <el-table-column prop="sale_num_z" label="总销量" sortable></el-table-column>
-            <el-table-column prop="sort" label="排序" sortable></el-table-column>
-            <el-table-column prop="goods_status" label="状态" sortable>
+            <el-table-column prop="visits_total" label="访问量"></el-table-column>
+            <el-table-column prop="sale_num_z" label="总销量"></el-table-column>
+            <el-table-column prop="sort" label="排序"></el-table-column>
+            <el-table-column prop="goods_status" label="状态">
                 <template slot-scope="scope">
                     <span v-if="scope.row.goods_status==0">库存里</span>
                     <span v-if="scope.row.goods_status==1">已上架</span>
@@ -155,7 +155,6 @@ import {
     upperGoodsSort
 } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 import utils from "../../common/js/util";
 import draggable from "vuedraggable";
 
@@ -213,7 +212,7 @@ export default {
                 ids: this.ids.toString(),
                 action: "sort"
             };
-            goodsOperate(qs.stringify(params))
+            goodsOperate(params)
                 .then(res => {
                     if (res.data.code==200) {
                         this.$message({
@@ -307,7 +306,7 @@ export default {
                 ids: this.ids.toString(),
                 action: type
             };
-            goodsOperate(qs.stringify(params))
+            goodsOperate(params)
                 .then(res => {
                     console.log(res);
                     if (res.data.code==200) {

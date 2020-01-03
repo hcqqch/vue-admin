@@ -99,7 +99,6 @@
 
 <script>
 import { couponList,couponOpreate } from "../../api/api";
-import qs from "qs";
 import utils from "@/common/js/util";
 
 export default {
@@ -135,7 +134,7 @@ export default {
                 ids:this.ids,
                 action:"end"
             }
-             couponOpreate(qs.stringify(params)).then(res=>{
+             couponOpreate(params).then(res=>{
                 if(res.data.msg){
                     this.$message({
                         type:"success",
@@ -169,7 +168,7 @@ export default {
                 ids:id,
                 action:"end"
             }
-            couponOpreate(qs.stringify(params)).then(res=>{
+            couponOpreate(params).then(res=>{
                 if(res.data.msg){
                     this.$message({
                         type:"success",

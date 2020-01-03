@@ -71,7 +71,6 @@
 <script>
 import { shopSetting, getshopSetting } from "../../api/api";
 import { st } from "../../city";
-import qs from "qs";
 
 export default {
     data() {
@@ -130,7 +129,7 @@ export default {
             };
 
             console.log(this.form.city);
-            shopSetting(qs.stringify(params))
+            shopSetting(params)
                 .then(res => {
                     if (res.data.code == 200) {
                         this.$message({

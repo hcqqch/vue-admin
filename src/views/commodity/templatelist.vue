@@ -21,7 +21,6 @@
 <script>
 import { getTemplist, delFreightTmplate} from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -48,7 +47,7 @@ export default {
             const params = {
                 id
             };
-            delFreightTmplate(qs.stringify(params))
+            delFreightTmplate(params)
                 .then(res => {
                     if (res.data.msg) {
                         this.$message({

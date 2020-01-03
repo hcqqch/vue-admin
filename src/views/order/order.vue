@@ -205,7 +205,9 @@ export default {
                 });
             this.dialogFormVisible = false;
         },
-        handleEdit() {},
+        handleEdit(id) {
+            this.$router.push("/addcommodity?id=" + id);
+        },
         handleCurrentChange(val) {
             this.page = val;
             this.getdata();

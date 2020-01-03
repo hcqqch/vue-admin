@@ -39,7 +39,6 @@
 <script>
 import { getTaglist, addTag, updateTag, deleteTag } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -138,7 +137,7 @@ export default {
                 const params = {
                     name: this.form.name
                 };
-                addTag(qs.stringify(params))
+                addTag(params)
                     .then(res => {
                         console.log(res.data);
                         if (res.data.msg) {
@@ -161,7 +160,7 @@ export default {
                     id:this.id,
                     name: this.form.name
                 };
-                updateTag(qs.stringify(params))
+                updateTag(params)
                     .then(res => {
                         console.log(res.data);
                         if (res.data.code==200) {
@@ -186,7 +185,7 @@ export default {
             const params = {
                 id
             };
-            deleteTag(qs.stringify(params))
+            deleteTag(params)
                 .then(res => {
                     if (res.data.code ==200) {
                         this.$message({

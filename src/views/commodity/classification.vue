@@ -74,7 +74,6 @@ import {
     addGoodsNewlist
 } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -105,7 +104,6 @@ export default {
         };
     },
     methods: {
-        handleChange() {},
         applyFirst(){
             this.isShowFirst = true;
             this.firstId = 0;
@@ -135,7 +133,7 @@ export default {
                 s_id:this.secondId,
                 t_id:this.thirdId,
             }
-            addGoodsNewlist(qs.stringify(params)).then(res=>{
+            addGoodsNewlist(params).then(res=>{
                 if (res.data.code==200) {
                         this.$message({
                             message: res.data.msg,
@@ -157,6 +155,9 @@ export default {
             this.firstInput = "";
             this.secondInput = "";
             this.thirdInput = "";
+            this.first = "";
+            this.second = "";
+            this.third = "";
         },
         choseFirst(id) {
             const params = {
@@ -191,7 +192,7 @@ export default {
                         }
                     })
                     this.third = "";
-                    this.thirdId = id;
+                    this.secondId = id;
                 })
                 .catch();
         },
@@ -228,7 +229,7 @@ export default {
             const params = {
                 name: this.form.name
             };
-            addNorms(qs.stringify(params))
+            addNorms(params)
                 .then(res => {
                     if (res.data.code==200) {
                         this.$message({

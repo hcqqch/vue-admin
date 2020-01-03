@@ -6,7 +6,7 @@
             <el-col :span="24">
                 操作时间：
                 <el-date-picker
-                    v-model="value2"
+                    v-model="effectiveTime"
                     type="daterange"
                     align="right"
                     unlink-panels
@@ -15,7 +15,7 @@
                     end-placeholder="结束日期"
                     :picker-options="pickerOptions"
                 ></el-date-picker>
-                <el-button type="primary">查询</el-button>
+                <el-button @click="onSearch" type="primary">查询</el-button>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
@@ -27,10 +27,13 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getCustomerInc } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            value2: "", //操作时间
+            effectiveTime: "", //操作时间
             pickerOptions: {
                 shortcuts: [
                     {
@@ -76,15 +79,21 @@ export default {
                     label: "top20"
                 }
             ],
-            value: ""
+            value: "",
+            xdata: null,
+            ydata: null
         };
     },
     methods: {
+        onSearch(){
+            this.getCustomerInc();
+        },
         drawLineChart() {
+            let that = this;
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             this.chartLine.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
@@ -101,15 +110,7 @@ export default {
                 xAxis: {
                     type: "category",
                     boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
+                    data: this.xdata
                 },
                 yAxis: {
                     type: "value"
@@ -119,14 +120,45 @@ export default {
                         name: "新增会员数",
                         type: "line",
                         stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
+                        data: this.ydata
                     }
                 ]
             });
         },
+        getCustomerInc() {
+            let end_time = new Date();
+            let start_time = new Date();
+            start_time.setTime(start_time.getTime() - 3600 * 1000 * 24 * 7);
+            end_time = utils.formatDate.format(end_time,"yyyy-MM-dd")
+            start_time = utils.formatDate.format(start_time,"yyyy-MM-dd")
+            if (this.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.effectiveTime[0],
+                    "yyyy-MM-dd"
+                );
+                end_time = utils.formatDate.format(
+                    this.effectiveTime[1],
+                    "yyyy-MM-dd"
+                );
+            }
+            const params = {
+                start_date: start_time,
+                end_date: end_time
+            };
+            getCustomerInc(params)
+                .then(res => {
+                    const data = res.data.data;
+                    this.xdata = data[0];
+                    this.ydata = data[1].data;
+                    this.drawLineChart();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     },
     mounted() {
-        this.drawLineChart();
+        this.getCustomerInc();
     },
     updated() {
         this.drawLineChart();

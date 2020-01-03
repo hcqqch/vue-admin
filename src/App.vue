@@ -68,6 +68,25 @@ body {
 	opacity: 0;
 }
 
+
+// .el-input__inner {
+// 	height: 32px !important;
+// 	line-height: 32px !important;
+// }
+
+// .el-button{
+// 	padding: 8px auto !important;
+// }
+.el-table th {
+    background-color: #EEF2FE !important;
+}
+.el-table .cell{
+	text-align: center;
+}
+// .el-menu{
+// 	background-color: #EEF2FE !important;
+// }
+// 菜单图标样式
 .el-icon-my-shop{
 	width: 18px !important;
 	height: 18px !important;

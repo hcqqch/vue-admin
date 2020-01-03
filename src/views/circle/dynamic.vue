@@ -67,7 +67,6 @@
 <script>
 import { getDynamicList, circleOperate } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -92,7 +91,7 @@ export default {
         },
         handleOpt(id, type) {
             const params = {
-                ids:id,
+                ids: id,
                 action: type
             };
             circleOperate(params)
@@ -112,11 +111,11 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-                this.getDynamicList();
+            this.getDynamicList();
         },
-        handleBatch(type){
+        handleBatch(type) {
             const params = {
-                ids:this.ids.toString(),
+                ids: this.ids.toString(),
                 action: type
             };
             circleOperate(params)
@@ -136,7 +135,7 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-                this.getDynamicList();
+            this.getDynamicList();
         },
         getDynamicList() {
             this.listLoading = true;
@@ -151,7 +150,6 @@ export default {
                     console.log(err);
                 });
         }
-
     },
     mounted() {
         this.getDynamicList();

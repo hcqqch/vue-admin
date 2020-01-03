@@ -48,11 +48,19 @@
                     </div>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="优惠设置">
+            <el-form-item label="优惠条件">
                 <el-radio-group @change="changeRadio2" v-model="form.radioCondition2">
                     <div>
                         <el-radio :label="1">满额</el-radio>
                         <el-radio :label="2">满件</el-radio>
+                    </div>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="优惠方式">
+                <el-radio-group @change="changeRadio4" v-model="form.radioCondition4">
+                    <div>
+                        <el-radio :label="1">折扣</el-radio>
+                        <el-radio :label="2">减额</el-radio>
                     </div>
                 </el-radio-group>
             </el-form-item>
@@ -73,13 +81,15 @@
                 </el-table-column>
                 <el-table-column prop="yhje" label="优惠金额" width>
                     <template slot-scope="scope">
-                        减
+                        <span v-if="form.radioCondition4==2">减</span>
                         <el-input
                             size="mini"
                             style="width:30%"
                             :disabled="(scope.row.disabled)"
                             v-model="scope.row.decrease"
-                        ></el-input>元
+                        ></el-input>
+                        <span v-if="form.radioCondition4==2">元</span>
+                        <span v-if="form.radioCondition4==1">折</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width>
@@ -186,7 +196,6 @@ import {
     fullScaleEdit,
     getFullScaleDetail
 } from "../../api/api";
-import qs from "qs";
 import utils from "@/common/js/util";
 
 export default {
@@ -199,6 +208,7 @@ export default {
                 radioCondition: "", //是否叠加优惠券
                 radioCondition2: "",
                 radioCondition3: "",
+                radioCondition4: "",
                 fullReducePrice: "", //满减
                 fullReduceNum: "", //满件
                 limitTimes: "" //限制次数
@@ -219,6 +229,7 @@ export default {
         changeRadio(value) {},
         changeRadio2() {},
         changeRadio3() {},
+        changeRadio4(){},
         addRange() {
             this.tableData2.push({});
         },
@@ -272,6 +283,7 @@ export default {
                 limit: this.form.limitTimes,
                 add_coupon: this.form.radioCondition,
                 condition_type: this.form.radioCondition2,
+                discount_type:this.form.radioCondition4,
                 condition_data: this.tableData2,
                 product_type: this.form.radioCondition3,
                 pids: ids.toString()
@@ -387,6 +399,7 @@ export default {
                     this.form.limitTimes = data.limit;
                     this.form.radioCondition = Number(data.add_coupon);
                     this.form.radioCondition2 = Number(data.condition_type);
+                    this.form.radioCondition4 = Number(data.discount_type);
                     this.tableData2 = JSON.parse(data.condition_data);
                     this.form.radioCondition3 = Number(data.product_type);
                     this.checkedGoods = [];

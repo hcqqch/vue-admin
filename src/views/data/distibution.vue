@@ -9,8 +9,8 @@
             <div style="color:#909399">会员数top10省份</div>
             <el-col :span="4">
                 <el-table :data="tableData">
-                    <el-table-column prop="date" label="地区" width></el-table-column>
-                    <el-table-column prop="name" label="数量" width></el-table-column>
+                    <el-table-column prop="name" label="地区" width></el-table-column>
+                    <el-table-column prop="value" label="数量" width></el-table-column>
                 </el-table>
             </el-col>
         </el-row>
@@ -19,33 +19,19 @@
 <script>
 import echarts from "echarts";
 import { ChinaData } from "china-map-geojson";
+import { areaDistribution } from "../../api/api";
     
 export default {
     data() {
         return {
             chartLine: {},
-            tableData: [
-                {
-                    date: "江苏",
-                    name: "3"
-                },
-                {
-                    date: "北京",
-                    name: "4"
-                },
-                {
-                    date: "安徽",
-                    name: "2"
-                },
-                {
-                    date: "北京",
-                    name: "5"
-                }
-            ]
+            tableData: [],
+            data:[]
         };
     },
     methods: {
         drawLineChart() {
+            const that = this;
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             const map = echarts.registerMap("china", ChinaData);
             this.chartLine.setOption({
@@ -67,29 +53,29 @@ export default {
                         type: "map",
                         map: "china",
                         zoom: 1.2,
-                        data: [
-                            {
-                                name: "江苏",
-                                value: 3
-                            },
-                            {
-                                name: "浙江",
-                                value: 3
-                            },
-                            {
-                                name: "上海",
-                                value: 113
-                            }
-                        ]
+                        data: that.data
                     }
                 ]
             });
             // console.log(this.chartLine.getOption())
             console.log(this.chartLine);
+        },
+        areaDistribution(){
+            areaDistribution().then(res=>{
+                let data = res.data.data.data;
+                this.data = data;
+                if(data.length>10){
+                    data = data.splice(9,data.length-10)
+                }
+                this.tableData = data;
+            }).catch(err=>{
+                console.log(err)
+            })
         }
     },
     mounted() {
         this.drawLineChart();
+        this.areaDistribution();
     },
     updated() {
         this.drawLineChart();

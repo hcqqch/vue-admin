@@ -121,7 +121,6 @@
 
 <script>
 import { fullScaleList, fullScaleAdd, OverFullScale } from "../../api/api";
-import qs from "qs";
 import utils from "@/common/js/util";
 
 export default {
@@ -166,7 +165,7 @@ export default {
             const params = {
                 id
             }
-            OverFullScale(qs.stringify(params)).then(res=>{
+            OverFullScale(params).then(res=>{
                 if(res.data.msg){
                     this.$message({
                         message:res.data.msg,
@@ -185,7 +184,7 @@ export default {
             const params = {
                 id:this.ids.toString()
             }
-            OverFullScale(qs.stringify(params)).then(res=>{
+            OverFullScale(params).then(res=>{
                 if(res.data.msg){
                     this.$message({
                         message:res.data.msg,

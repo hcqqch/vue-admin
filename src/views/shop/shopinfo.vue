@@ -14,7 +14,7 @@
                 >
                     <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+            </el-upload>
             </el-form-item>
             <el-form-item label="店铺名称">
                 <el-input v-model="form.name"></el-input>
@@ -84,7 +84,6 @@
 <script>
 import { getInformation, submitInformation } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
@@ -97,11 +96,11 @@ export default {
                 description: ""
             },
             link: "",
-            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            upload_qiniu_addr: "http://img.pintaihui.cn/",
             qiniuData: { key: "", token: "" },
             imageUrl: "",
             Global: {
-                dataUrl: "http://office.pintaihui.cn"
+                dataUrl: "https://office.pintaihui.cn"
             },
             isPhoneNum2: false,
             typeName: "", //店铺类型
@@ -170,8 +169,7 @@ export default {
                 description: this.form.description
             };
             
-            console.log(qs.stringify(params));
-            submitInformation(qs.stringify(params), config)
+            submitInformation(params)
                 .then(res => {
                     if (res.data.code == 200) {
                         this.$message({
@@ -216,7 +214,7 @@ export default {
                 this.url4 = data.rz.people_identity_front;
                 this.items = data.rz.other;
             });
-        }
+        },
     },
     created() {
         this.getQiniuToken();

@@ -6,7 +6,7 @@
             <el-col :span="24">
                 操作时间：
                 <el-date-picker
-                    v-model="value2"
+                    v-model="effectiveTime"
                     type="daterange"
                     align="right"
                     unlink-panels
@@ -15,18 +15,18 @@
                     end-placeholder="结束日期"
                     :picker-options="pickerOptions"
                 ></el-date-picker>
-                <el-button type="primary">查询</el-button>
+                <el-button @click="onSearch" type="primary">查询</el-button>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="8">
-                <el-card shadow="always" style="margin-right:20px">总购买人数：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">总购买人数：{{total}}</el-card>
             </el-col>
             <el-col :span="8">
-                <el-card shadow="always" style="margin-right:20px">老顾客数：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">老顾客数：{{old}}</el-card>
             </el-col>
             <el-col :span="8">
-                <el-card shadow="always">老顾客占比：0</el-card>
+                <el-card shadow="always">老顾客占比：{{old_percent}}</el-card>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
@@ -38,10 +38,13 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getBuyers } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            value2: "", //操作时间
+            effectiveTime: "", //操作时间
             pickerOptions: {
                 shortcuts: [
                     {
@@ -68,29 +71,29 @@ export default {
                     }
                 ]
             },
-            tableData: [
-                {
-                    date: "2016-05-02",
-                    name: "1",
-                    address: "1 1518 弄"
-                }
-            ],
             chartLine: {},
-            chartLine2:{}
+            total: "",
+            old: "",
+            old_percent: "",
+            xdata: null,
+            ydata: null
         };
     },
     methods: {
+        onSearch(){
+            this.getBuyers();
+        },
         drawLineChart() {
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             this.chartLine.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
                 },
                 legend: {
-                    data: ["订单数", "订单金额"]
+                    data: ["当日购买数", "老顾客数","老顾客占比"]
                 },
                 grid: {
                     left: "3%",
@@ -101,51 +104,62 @@ export default {
                 xAxis: {
                     type: "category",
                     boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
+                    data: this.xdata
                 },
                 yAxis: {
                     type: "value"
                 },
-                series: [
-                    {
-                        name: "当日购买人数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "老会员",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: "新会员",
-                        type: "line",
-                        stack: "总量",
-                        data: [320, 112, 191, 234, 290, 330, 310]
-                    }
-                ]
+                series: this.ydata
             });
         },
+        getBuyers() {
+            let end_time = new Date();
+            let start_time = new Date();
+            start_time.setTime(start_time.getTime() - 3600 * 1000 * 24 * 7);
+            end_time = utils.formatDate.format(end_time, "yyyy-MM-dd");
+            start_time = utils.formatDate.format(start_time, "yyyy-MM-dd");
+            if (this.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.effectiveTime[0],
+                    "yyyy-MM-dd"
+                );
+                end_time = utils.formatDate.format(
+                    this.effectiveTime[1],
+                    "yyyy-MM-dd"
+                );
+            }
+            const params = {
+                start_date: start_time,
+                end_date: end_time
+            };
+            getBuyers(params)
+                .then(res => {
+                    const data = res.data.data;
+                    console.log(data);
+                    this.total = data.summary.total;
+                    this.old = data.summary.old;
+                    this.old_percent = data.summary.old_percent;
+                    data.value.map(item=>{
+                        item.type = "line"
+                    })
+                    this.xdata = data.date;
+                    this.ydata = data.value;
+                    this.drawLineChart();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     },
     mounted() {
-        this.drawLineChart();
+        this.getBuyers();
     },
     updated() {
         this.drawLineChart();
     }
 };
 </script>
-<style lang="scss" scoped> 
+<style lang="scss" scoped>
 .infoItem {
     width: 99%;
     padding: 10px;

@@ -1,33 +1,5 @@
 import axios from 'axios'
-import qs from 'qs'
-axios.defaults.timeout = 5000;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-axios.defaults.baseURL = 'http://office.pintaihui.cn';
-let base = 'http://office.pintaihui.cn';
-
-//POST传参序列化
-axios.interceptors.request.use((config) => {
-    if (config.method === 'post') {
-        config.data = qs.stringify(config.data);
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
-
-//返回状态判断
-axios.interceptors.response.use((res) => {
-    if (!res.data.msg) {
-        return Promise.reject(res);
-    }
-    return res;
-}, (error) => {
-    //404等问题可以在这里处理
-    return Promise.reject(error);
-});
-
-
-
+let base = 'https://office.pintaihui.cn';
 
 // 登录
 export const requestLogin = params => {
@@ -47,6 +19,12 @@ export const checkAccount = (params, config) => {
 };
 
 
+// 店铺概况
+export const getShopInfo = params => {
+    return axios.get(`${base}/api/v1/statistics/information`, {
+        params: params
+    });
+};
 // 获取店铺信息
 export const getInformation = params => {
     return axios.get(`${base}/api/v1/shop/information`, {
@@ -349,6 +327,19 @@ export const delEmployee = (params, config) => {
 };
 
 
+
+// 操作日志
+export const getLoglist = (params, config) => {
+    return axios.get(`${base}/api/v1/shop/log/lists`, {
+        params
+    }, config);
+};
+// 删除日志
+export const delLog = (params, config) => {
+    return axios.post(`${base}/api/v1/shop/log/operate`, params, config);
+};
+
+
 // 获取个人信息
 export const getEmployeeInfo = (params, config) => {
     return axios.get(`${base}/api/v1/shop/employee/information`, {
@@ -383,6 +374,12 @@ export const getCircleInfo = (params, config) => {
         params
     }, config);
 };
+// 商圈信息
+export const getCircle = (params, config) => {
+    return axios.get(`${base}/api/v1/shop/circle/information`, {
+        params
+    }, config);
+}
 
 
 
@@ -448,7 +445,75 @@ export const sendGoods = (params, config) => {
 };
 // 获取快递公司
 export const getOrderExpress = (params, config) => {
-    return axios.get(`${base}/api/v1/order/express`, {
+        return axios.get(`${base}/api/v1/order/express`, {
+            params
+        }, config);
+    }
+    // 退货订单列表
+export const getRefundlist = (params, config) => {
+        return axios.get(`${base}/api/v1/order/return_lists`, {
+            params
+        }, config);
+    }
+    // 退货订单操作
+export const backOrderOperate = (params, config) => {
+    return axios.post(`${base}/api/v1/order/operate`, params, config);
+};
+// 退换申请
+export const getRefundApply = (params, config) => {
+    return axios.get(`${base}/api/v1/order/refund_lists`, {
+        params
+    }, config);
+}
+
+
+// 账户总览
+export const getWallet = (params, config) => {
+        return axios.get(`${base}/api/v1/shop/wallet/get`, {
+            params
+        }, config);
+    }
+    // 账单明细
+export const getBillDetail = (params, config) => {
+        return axios.get(`${base}/api/v1/shop/bill_log/get`, {
+            params
+        }, config);
+    }
+    // 提现
+export const postWallet = (params, config) => {
+    return axios.post(`${base}/api/v1/shop/wallet/post`, params, config);
+};
+
+
+// 地区分布
+export const areaDistribution = (params, config) => {
+    return axios.get(`${base}/api/v1/statistics/customer_area`, {
+        params
+    }, config);
+}
+
+// 客户增长统计
+export const getCustomerInc = (params, config) => {
+    return axios.get(`${base}/api/v1/statistics/customer_incr`, {
+        params
+    }, config);
+}
+
+// 商品排行
+export const getGoodsRank = (params, config) => {
+        return axios.get(`${base}/api/v1/statistics/goods_top`, {
+            params
+        }, config);
+    }
+    // 负消率
+export const getBuyers = (params, config) => {
+        return axios.get(`${base}/api/v1/statistics/buyers`, {
+            params
+        }, config);
+    }
+    // 经营简报
+export const getReport = (params, config) => {
+    return axios.get(`${base}/api/v1/statistics/report`, {
         params
     }, config);
 }

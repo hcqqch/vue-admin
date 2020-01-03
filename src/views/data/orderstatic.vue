@@ -135,7 +135,7 @@ export default {
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             this.chartLine.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
@@ -187,7 +187,7 @@ export default {
             );
             this.chartLine2.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"

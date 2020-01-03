@@ -67,7 +67,6 @@ import {
     delDept,
     getUpdateDept
 } from "../../api/api";
-import qs from "qs";
 
 export default {
     data() {

@@ -3,10 +3,10 @@
     <section style="padding:20px">
         <div class="infoItem">经营情况</div>
         <el-row>
-            <el-col :span="24">
+            <el-col :span="24" style="margin-bottom:20px">
                 操作时间：
                 <el-date-picker
-                    v-model="value2"
+                    v-model="effectiveTime"
                     type="daterange"
                     align="right"
                     unlink-panels
@@ -15,27 +15,37 @@
                     end-placeholder="结束日期"
                     :picker-options="pickerOptions"
                 ></el-date-picker>
-                <el-button type="primary">查询</el-button>
+                <el-button @click="onSearch" type="primary">查询</el-button>
             </el-col>
         </el-row>
-        <el-row>
-            <el-table :data="tableData" style="width:100%">
-                <el-table-column prop="date" label="客单价" width="180"></el-table-column>
-                <el-table-column prop="name" label="订单数" width="180"></el-table-column>
-                <el-table-column prop="address" label="购买人数"></el-table-column>
-                <el-table-column prop="address" label="订单金额"></el-table-column>
-            </el-table>
+        <el-row style="margin-top:20px">
+            <el-col :span="6">
+                <el-card shadow="always" style="margin-right:20px">客单价{{per_sales}}</el-card>
+            </el-col>
+            <el-col :span="6">
+                <el-card shadow="always" style="margin-right:20px">订单数{{orders}}</el-card>
+            </el-col>
+            <el-col :span="6">
+                <el-card shadow="always" style="margin-right:20px">购买人数{{buyers}}</el-card>
+            </el-col>
+            <el-col :span="6">
+                <el-card shadow="always">订单金额{{money}}</el-card>
+            </el-col>
         </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="24">
                 <div id="chartLine" style="width:100%; height:500px;"></div>
             </el-col>
         </el-row>
-        <div class="infoItem">客户情况</div>
-        <el-table :data="tableData2" style="width:100%">
-            <el-table-column prop="date" label="新增客户数" width="180"></el-table-column>
-            <el-table-column prop="name" label="新增分销人数" width="180"></el-table-column>
-        </el-table>
+        <div class="infoItem" style="margin-top:30px">客户情况</div>
+        <el-row style="margin-top:20px">
+            <el-col :span="12">
+                <el-card shadow="always" style="margin-right:20px">新增客户数{{user}}</el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card shadow="always" style="margin-right:20px">新增分销人数{{distribution}}</el-card>
+            </el-col>
+        </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="24">
                 <div id="chartLine2" style="width:100%; height:500px;"></div>
@@ -45,10 +55,13 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getReport } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            value2: "", //操作时间
+            effectiveTime: "", //操作时间
             pickerOptions: {
                 shortcuts: [
                     {
@@ -75,15 +88,18 @@ export default {
                     }
                 ]
             },
-            tableData: [
-                {
-                    date: "2016-05-02",
-                    name: "1",
-                    address: "1 1518 弄"
-                }
-            ],
+            per_sales: "",
+            orders: "",
+            buyers: "",
+            money: "",
+            user: "",
+            distribution: "",
             chartLine: {},
-            chartLine2:{}
+            chartLine2: {},
+            xdata: null,
+            ydata: null,
+            u_xdata: null,
+            u_ydata: null
         };
     },
     methods: {
@@ -91,7 +107,7 @@ export default {
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             this.chartLine.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
@@ -108,40 +124,21 @@ export default {
                 xAxis: {
                     type: "category",
                     boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
+                    data: this.xdata
                 },
                 yAxis: {
                     type: "value"
                 },
-                series: [
-                    {
-                        name: "订单数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "订单金额",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    }
-                ]
+                series: this.ydata
             });
         },
-         drawLineChart2() {
-            this.chartLine2 = echarts.init(document.getElementById("chartLine2"));
+        drawLineChart2() {
+            this.chartLine2 = echarts.init(
+                document.getElementById("chartLine2")
+            );
             this.chartLine2.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
@@ -158,39 +155,65 @@ export default {
                 xAxis: {
                     type: "category",
                     boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
+                    data: this.xdata
                 },
                 yAxis: {
                     type: "value"
                 },
-                series: [
-                    {
-                        name: "新增会员",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "新增分销商",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                ]
+                series: this.u_ydata
             });
+        },
+        onSearch() {
+            this.getReport();
+        },
+        getReport() {
+            let end_time = new Date();
+            let start_time = new Date();
+            start_time.setTime(start_time.getTime() - 3600 * 1000 * 24 * 7);
+            end_time = utils.formatDate.format(end_time, "yyyy-MM-dd");
+            start_time = utils.formatDate.format(start_time, "yyyy-MM-dd");
+            if (this.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.effectiveTime[0],
+                    "yyyy-MM-dd"
+                );
+                end_time = utils.formatDate.format(
+                    this.effectiveTime[1],
+                    "yyyy-MM-dd"
+                );
+            }
+            const params = {
+                start_date: start_time,
+                end_date: end_time
+            };
+            getReport(params)
+                .then(res => {
+                    const data = res.data.data;
+                    this.per_sales = data.report.per_sales;
+                    this.orders = data.report.orders;
+                    this.buyers = data.report.buyers;
+                    this.money = data.report.money;
+                    this.user = data.incr_report.user;
+                    this.distribution = data.incr_report.distribution;
+                    data.order.map(item => {
+                        item.type = "line";
+                    });
+                    this.xdata = data.date;
+                    this.ydata = data.order;
+                    data.incr.map(item => {
+                        item.type = "line";
+                    });
+                    this.u_ydata = data.incr;
+                    this.drawLineChart();
+                    this.drawLineChart2();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     },
     mounted() {
-        this.drawLineChart();
-        this.drawLineChart2();
+        this.getReport();
     },
     updated() {
         this.drawLineChart();

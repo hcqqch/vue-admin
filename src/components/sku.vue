@@ -306,6 +306,21 @@ function objEquals(object1, object2) {
 export default {
     name: "skuwrap",
 
+    // props:{
+    //     skuOptions:{
+    //         type:Object,
+    //         default:[]
+    //     },
+    //     specification:{
+    //         type:Object,
+    //         default:[]
+    //     },
+    //     childProductArray:{
+    //         type:Object,
+    //         default:[]
+    //     }
+    // },
+
     props: ["skuOptions","specification","childProductArray"],
 
     data() {
@@ -313,6 +328,7 @@ export default {
             // 显示规格列表
             specificationStatus: false,
             // 规格
+            // specification:[],
             // specification: [
             //     // {
             //     //     name: "颜色",
@@ -367,11 +383,11 @@ export default {
             defaultPrice: "", //默认价格
             defaultSku: "", //默认库存
 
-            upload_qiniu_addr: "http://q1ecexot0.bkt.clouddn.com/",
+            upload_qiniu_addr: "http://img.pintaihui.cn/",
             qiniuData: { key: "", token: "" },
             imageUrl: "", //默认规格图
             Global: {
-                dataUrl: "http://office.pintaihui.cn"
+                dataUrl: "https://office.pintaihui.cn"
             },
             specDrawing:""//详细规格图
         };
@@ -400,6 +416,7 @@ export default {
         // 添加规格项目
         addSpec() {
             if (this.specification.length < 4) {
+                console.log(this.specification);
                 this.specification.push({
                     name: "",
                     value: []
@@ -494,8 +511,6 @@ export default {
             // 如果当前项目下没有属性，则不显示
             if (!this.specification[specIndex]) {
                 return false;
-
-                // 自己悟一下吧
             } else if (index % this.countSum(specIndex + 1) === 0) {
                 return true;
             } else {

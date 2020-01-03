@@ -60,7 +60,6 @@ import {
     unbindAccount
 } from "../../api/api";
 import utils from "../../common/js/util";
-import qs from "qs";
 
 export default {
     data() {

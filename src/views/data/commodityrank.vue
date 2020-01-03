@@ -3,10 +3,10 @@
     <section style="padding:20px">
         <div class="infoItem">商品排行</div>
         <el-row>
-            <el-col :span="24">
+            <el-col :span="24" style="margin-bottom:20px">
                 操作时间：
                 <el-date-picker
-                    v-model="value2"
+                    v-model="effectiveTime"
                     type="daterange"
                     align="right"
                     unlink-panels
@@ -15,24 +15,29 @@
                     end-placeholder="结束日期"
                     :picker-options="pickerOptions"
                 ></el-date-picker>
-                <el-button type="primary">查询</el-button>
+                <el-select v-model="rankType" placeholder="请选择">
+                    <el-option label="销量" value="1">销量</el-option>
+                    <el-option label="销售额" value="2">销售额</el-option>
+                    <el-option label="订单额" value="3">订单额</el-option>
+                    <el-option label="购买人数" value="4">购买人数</el-option>
+                    <el-option label="分享次数" value="5">分享次数</el-option>
+                    <el-option label="访问次数" value="6">访问次数</el-option>
+                </el-select>
+                <el-button @click="onSearch" type="primary">查询</el-button>
             </el-col>
         </el-row>
-    
+
         <el-table :data="tableData" style="width:100%">
-            <el-table-column prop="date" label="用户名" width="180"></el-table-column>
-            <el-table-column prop="name" label="身份" width="180"></el-table-column>
-            <el-table-column prop="address" label="联系电话"></el-table-column>
-            <el-table-column prop="date" label="销售额" width="180"></el-table-column>
-            <el-table-column prop="name" label="订单数" width="180"></el-table-column>
-            <el-table-column prop="address" label="成交用户数"></el-table-column>
-            <el-table-column prop="date" label="客单价" width="180"></el-table-column>
-            <el-table-column prop="name" label="佣金收入" width="180"></el-table-column>
-            <el-table-column prop="address" label="分享次数"></el-table-column>
-            <el-table-column prop="date" label="分享成交率" width="180"></el-table-column>
-            <el-table-column prop="name" label="操作" width="180">
+            <el-table-column prop="goods_name" label="商品名称" width="180"></el-table-column>
+            <el-table-column prop="sale_time" label="上架时间" width="180"></el-table-column>
+            <el-table-column prop="sales_count" label="销售量"></el-table-column>
+            <el-table-column prop="orders_count" label="订单量" width="180"></el-table-column>
+            <el-table-column prop="orders_money" label="销售额" width="180"></el-table-column>
+            <el-table-column prop="visits" label="访问次数"></el-table-column>
+            <el-table-column prop="visits" label="购买人数" width="180"></el-table-column>
+            <el-table-column prop="buyers" label="分享次数" width="180"></el-table-column>
+            <el-table-column prop="shares" label="操作" width="180">
                 <template scope="scope">
-                    <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button> -->
                     <el-button
                         size="small"
                         type="danger"
@@ -45,10 +50,13 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getGoodsRank } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            value2: "", //操作时间
+            effectiveTime: "", //操作时间
             pickerOptions: {
                 shortcuts: [
                     {
@@ -75,140 +83,46 @@ export default {
                     }
                 ]
             },
-            tableData: [
-                {
-                    date: "2016-05-02",
-                    name: "1",
-                    address: "1 1518 弄"
-                }
-            ],
-            chartLine: {},
-            chartLine2: {},
-            options: [
-                {
-                    value: "选项1",
-                    label: "top10"
-                },
-                {
-                    value: "选项2",
-                    label: "top20"
-                }
-            ],
-            value: ""
+            tableData: [],
+            rankType:"",
+            listLoading:false,
         };
     },
     methods: {
-        drawLineChart() {
-            this.chartLine = echarts.init(document.getElementById("chartLine"));
-            this.chartLine.setOption({
-                title: {
-                    text: "本周数据"
-                },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: ["订单数", "订单金额"]
-                },
-                grid: {
-                    left: "3%",
-                    right: "4%",
-                    bottom: "3%",
-                    containLabel: true
-                },
-                xAxis: {
-                    type: "category",
-                    boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
-                },
-                yAxis: {
-                    type: "value"
-                },
-                series: [
-                    {
-                        name: "订单数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "订单金额",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    }
-                ]
-            });
+        onSearch(){
+            this.getGoodsRank();
         },
-        drawLineChart2() {
-            this.chartLine2 = echarts.init(
-                document.getElementById("chartLine2")
-            );
-            this.chartLine2.setOption({
-                title: {
-                    text: "本周数据"
-                },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: ["新增会员", "新增分销商"]
-                },
-                grid: {
-                    left: "3%",
-                    right: "4%",
-                    bottom: "3%",
-                    containLabel: true
-                },
-                xAxis: {
-                    type: "category",
-                    boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
-                },
-                yAxis: {
-                    type: "value"
-                },
-                series: [
-                    {
-                        name: "新增会员",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "新增分销商",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    }
-                ]
-            });
+        getGoodsRank(){
+            let start_time = "";
+            let end_time = "";
+            if (this.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.effectiveTime[0],
+                    "yyyy-MM-dd hh:mm:ss"
+                );
+                end_time = utils.formatDate.format(
+                    this.effectiveTime[1],
+                    "yyyy-MM-dd hh:mm:ss"
+                );
+            }
+            const params = {
+                start_time,
+                end_time,
+                order:this.rankType
+            }
+            this.listLoading = true;
+            getGoodsRank(params).then(res=>{
+                const data = res.data.data.data;
+                this.tableData = data;
+                this.listLoading = false;
+            }).catch(err=>{
+                console.log(err)
+            })
         }
     },
     mounted() {
-        this.drawLineChart();
-        this.drawLineChart2();
+        this.getGoodsRank();
     },
-    updated() {
-        this.drawLineChart();
-        this.drawLineChart2();
-    }
 };
 </script>
 <style lang="scss" scoped>

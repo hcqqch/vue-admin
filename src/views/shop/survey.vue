@@ -7,49 +7,49 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">支付订单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.pay_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">未支付订单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.unpaid_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">取消订单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.cancel_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">成交金额（元）</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.amount}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">待发货订单</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.send_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">浏览量</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.visit}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">访问-支付转化率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.pay_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">售后订单</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.after_sale_num}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -57,49 +57,49 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">分销订单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.distribution_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">分销佣金（元）</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.distribution_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">客服咨询数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.service_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">客服回复数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.reply_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">咨询成交数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.consult_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">圈友下单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.circle_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">圈友分销订单</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.circle_distribution_order_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">回头客订单</div>
-                            <div class="num">18</div>
+                            <div class="num">{{today.repeat_order_num}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -112,49 +112,49 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">浏览量</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.visit}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">关注量</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.attention}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">新增关注</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.new_attention}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">累计客户数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.customer}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">上架新品数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.up_product}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">累计下单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.order_total}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">支付件数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.pay_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">售后订单数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.after_sale_num}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -162,25 +162,25 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">客服接待量</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.service_num}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">平均首次响应时长</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.first_reply_time}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">平均响应时长</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.reply_time}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">服务满意度</div>
-                            <div class="num">18</div>
+                            <div class="num">{{shop.service}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -193,49 +193,49 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">一星</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.one}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">二星</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.two}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">三星</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.three}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">四星</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.four}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">五星</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.five}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">有图</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.pic}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">默认</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.default}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">一星占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.one_percent}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -243,43 +243,37 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">二星占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.two_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">三星占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.three_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">四星占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.four_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">五星占比率</div>
-                            <div class="num">18</div>
-                        </div>
-                    </el-col>
-                    <el-col :span="3">
-                        <div class>
-                            <div class="des">咨询成交数</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.five_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">有图占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.pic_percent}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">默认占比率</div>
-                            <div class="num">18</div>
+                            <div class="num">{{evaluate.default_percent}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -292,43 +286,43 @@
                     <el-col :span="3">
                         <div class>
                             <div class="des">销售总金额</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.total_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">可用余额</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.available_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">待结算</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.stay_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">广告投放金额</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.ad_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">退款总金额</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.refund_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">客单价</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.total_money}}</div>
                         </div>
                     </el-col>
                     <el-col :span="3">
                         <div class>
                             <div class="des">保证金</div>
-                            <div class="num">18</div>
+                            <div class="num">{{finance.customer_money}}</div>
                         </div>
                     </el-col>
                 </el-row>
@@ -347,20 +341,79 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getShopInfo } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            chartLine: {}
+            chartLine: {},
+            xdata: null,
+            ydata: null,
+            today: {
+                pay_order_num: "",
+                unpaid_order_num: "",
+                cancel_order_num: "",
+                amount: "",
+                send_order_num: "",
+                visit: "",
+                pay_percent: "",
+                after_sale_num: "",
+                distribution_order_num: "",
+                distribution_money: "",
+                service_num: "",
+                reply_num: "",
+                consult_num: "",
+                circle_order_num: "",
+                circle_distribution_order_num: "",
+                repeat_order_num: ""
+            },
+            shop: {
+                visit: "",
+                attention: "",
+                new_attention: "",
+                customer: "",
+                up_product: "",
+                pay_num: "",
+                after_sale_num: "",
+                service_num: "",
+                first_reply_time: "",
+                reply_time: ""
+            },
+            evaluate: {
+                one: "",
+                two: "",
+                three: "",
+                four: "",
+                five: "",
+                pic: "",
+                one_percent: "",
+                two_percent: "",
+                three_percent: "",
+                four_percent: "",
+                five_percent: "",
+                pic_percent: ""
+            },
+            finance: {
+                total_money: "",
+                available_money: "",
+                stay_money: "",
+                ad_money: "",
+                refund_money: "",
+                customer_money: ""
+            }
         };
     },
     methods: {
         // 刷新数据
-        refresh() {},
+        refresh() {
+            this.getShopInfo();
+        },
         drawLineChart() {
             this.chartLine = echarts.init(document.getElementById("chartLine"));
             this.chartLine.setOption({
                 title: {
-                    text: "本周数据"
+                    text: ""
                 },
                 tooltip: {
                     trigger: "axis"
@@ -377,44 +430,36 @@ export default {
                 xAxis: {
                     type: "category",
                     boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
+                    data: this.xdata
                 },
                 yAxis: {
                     type: "value"
                 },
-                series: [
-                    {
-                        name: "支付订单数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "成交金额",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: "浏览量",
-                        type: "line",
-                        stack: "总量",
-                        data: [820, 932, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
+                series: this.ydata
             });
+        },
+        getShopInfo() {
+            getShopInfo()
+                .then(res => {
+                    const data = res.data.data;
+                    this.xdata = data.date;
+                    data.value.map(item => {
+                        item.type = "line";
+                    });
+                    this.ydata = data.value;
+                    this.drawLineChart();
+                    this.today = data.report.today;
+                    this.shop = data.report.shop;
+                    this.evaluate = data.report.evaluate;
+                    this.finance = data.report.finance;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     },
     mounted() {
-        this.drawLineChart();
+        this.getShopInfo();
     },
     updated() {
         this.drawLineChart();

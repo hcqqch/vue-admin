@@ -152,7 +152,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-
+                
                 <!--工具条-->
                 <el-col :span="24" class="toolbar">
                     <el-button @click="handleBatchAdd" type>批量加入</el-button>
@@ -175,7 +175,6 @@ import {
     getGoodlist,
     couponEdit
 } from "../../api/api";
-import qs from "qs";
 import utils from "@/common/js/util";
 
 export default {

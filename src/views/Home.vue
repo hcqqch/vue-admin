@@ -114,14 +114,15 @@
             </aside>
             <section class="content-container">
                 <div class="grid-content bg-purple-light">
-                    <!-- <el-col :span="24" class="breadcrumb-container">
-						<strong class="title">{{$route.name}}</strong>
-						<el-breadcrumb separator="/" class="breadcrumb-inner">
-							<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-								{{ item.name }}
-							</el-breadcrumb-item>
-						</el-breadcrumb>
-                    </el-col>-->
+                    <el-col :span="24" class="breadcrumb-container">
+                        <!-- <strong class="title">{{$route.name}}</strong> -->
+                        <el-breadcrumb separator="/" class="breadcrumb-inner">
+                            <el-breadcrumb-item
+                                v-for="item in $route.matched"
+                                :key="item.path"
+                            >{{ item.name }}</el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </el-col>
                     <!-- el-col :span -->
                     <el-col :span="24" class="content-wrapper">
                         <section style="padding:0 10px">
@@ -137,7 +138,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
     data() {
         return {
@@ -154,7 +155,7 @@ export default {
                 type: [],
                 resource: "",
                 desc: ""
-			},
+            }
         };
     },
     methods: {
@@ -188,7 +189,7 @@ export default {
             this.$refs.menuCollapsed.getElementsByClassName(
                 "submenu-hook-" + i
             )[0].style.display = status ? "block" : "none";
-        },
+        }
     },
     mounted() {
         var user = sessionStorage.getItem("user");
@@ -196,8 +197,8 @@ export default {
             user = JSON.parse(user);
             this.sysUserName = user.name || "";
             this.sysUserAvatar = user.avatar || "";
-		}
-    },
+        }
+    }
 };
 </script>
 
@@ -318,12 +319,12 @@ export default {
             .breadcrumb-container {
                 margin-bottom: 10px;
                 .title {
-                    width: 200px;
+                    // width: 200px;
                     float: left;
                     color: #475669;
                 }
                 .breadcrumb-inner {
-                    float: right;
+                    float: left;
                 }
             }
             .content-wrapper {

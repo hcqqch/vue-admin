@@ -96,7 +96,6 @@ import {
     sortCategory
 } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 // import Sortable from "sortablejs";
 
 export default {
@@ -264,7 +263,7 @@ export default {
             const params = {
                 id
             };
-            deleteCategory(qs.stringify(params))
+            deleteCategory(params)
                 .then(res => {
                     if (res.data.code==200) {
                         this.$message({
@@ -287,7 +286,7 @@ export default {
                     name: this.form.name,
                     id: this.id
                 };
-                await editCategory(qs.stringify(params))
+                await editCategory(params)
                     .then(res => {
                         if (res.data.code==200) {
                             this.$message({
@@ -307,7 +306,7 @@ export default {
                     name: this.form.name,
                     pid: this.id
                 };
-                await addCategory(qs.stringify(params))
+                await addCategory(params)
                     .then(res => {
                         if (res.data.code==200) {
                             this.$message({

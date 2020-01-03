@@ -19,7 +19,7 @@
                         </el-option>
                     </el-select> -->
                     <el-select
-                        style="width:50%"
+                        style="width:20%"
                         size="mini"
                         v-model="scope.row.sort"
                         placeholder="请选择"
@@ -62,7 +62,6 @@ import {
     sortCircleRight
 } from "../../api/api";
 import axios from "axios";
-import qs from "qs";
 
 export default {
     data() {
