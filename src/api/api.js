@@ -513,7 +513,17 @@ export const getBuyers = (params, config) => {
     }
     // 经营简报
 export const getReport = (params, config) => {
-    return axios.get(`${base}/api/v1/statistics/report`, {
-        params
-    }, config);
-}
+        return axios.get(`${base}/api/v1/statistics/report`, {
+            params
+        }, config);
+    }
+    // 订单统计
+export const getOrderStatic = (params, config) => {
+        return axios.get(`${base}/api/v1/statistics/total`, {
+            params
+        }, config);
+    }
+    // 交换名片
+export const changeCard = (params, config) => {
+    return axios.post(`${base}/api/v1/statistics/exchange_card`, params, config);
+};

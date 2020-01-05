@@ -10,7 +10,7 @@
                     :data="qiniuData"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload"
+                    :before-upload="beforeAvatarUpload" 
                 >
                     <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -18,7 +18,7 @@
             </el-form-item>
             <el-form-item label="店铺名称">
                 <el-input v-model="form.name"></el-input>
-            </el-form-item>
+            </el-form-item> 
             <el-form-item style="width:542px" label="联系电话">
                 <el-input style="width:80%" v-model="form.mobile" placeholder="请输入号码1"></el-input>
                 <el-button @click="addPhone">添加</el-button>
@@ -193,6 +193,7 @@ export default {
         },
         cancelPhone() {
             this.isPhoneNum2 = false;
+            this.form.mobile2 = "";
         },
         // 获取店铺信息
         getInformation() {

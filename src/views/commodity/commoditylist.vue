@@ -129,7 +129,7 @@
             ></el-pagination>
         </el-col>
 
-        <el-dialog :visible="dialogVisible">
+        <el-dialog :visible="dialogVisible" title="拖动商品来排序">
             <draggable v-model="goods">
                 <transition-group>
                     <!-- <div v-for="element in myArray" :key="element.id">{{element.name}}</div> -->

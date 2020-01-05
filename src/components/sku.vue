@@ -49,7 +49,7 @@
                 <el-button
                     size="small"
                     type="info"
-                    :disabled="specification.length >= 3"
+                    :disabled="specification.length >= 10"
                     @click="addSpec"
                 >添加规格项目</el-button>
             </div>
@@ -321,7 +321,7 @@ export default {
     //     }
     // },
 
-    props: ["skuOptions","specification","childProductArray"],
+    // props: ["skuOptions","specification","childProductArray"],
 
     data() {
         return {
@@ -329,12 +329,12 @@ export default {
             specificationStatus: false,
             // 规格
             // specification:[],
-            // specification: [
-            //     // {
-            //     //     name: "颜色",
-            //     //     value: ["黑色", "白色", "蓝色"]
-            //     // }
-            // ],
+            specification: [
+                // {
+                //     name: "颜色",
+                //     value: ["黑色", "白色", "蓝色"]
+                // }
+            ],
             //规格下拉数据
             // skuOptions: [],
             // 子规格
@@ -415,7 +415,7 @@ export default {
         },
         // 添加规格项目
         addSpec() {
-            if (this.specification.length < 4) {
+            if (this.specification.length < 11) {
                 console.log(this.specification);
                 this.specification.push({
                     name: "",

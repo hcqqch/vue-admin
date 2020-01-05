@@ -6,7 +6,7 @@
             <el-col :span="24">
                 操作时间：
                 <el-date-picker
-                    v-model="value2"
+                    v-model="effectiveTime"
                     type="daterange"
                     align="right"
                     unlink-panels
@@ -15,61 +15,61 @@
                     end-placeholder="结束日期"
                     :picker-options="pickerOptions"
                 ></el-date-picker>
-                <el-button type="primary">查询</el-button>
+                <el-button @click="onSearch" type="primary">查询</el-button>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="12">
-                <el-card shadow="always" style="margin-right:20px">订单总数：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">订单总数：{{order_count}}</el-card>
             </el-col>
             <el-col :span="12">
-                <el-card shadow="always">分销金额：0</el-card>
+                <el-card shadow="always">分销金额：{{order_money}}</el-card>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="6">
-                <el-card shadow="always" style="margin-right:20px">分销订单数：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">分销订单数：{{distribution_count}}</el-card>
             </el-col>
             <el-col :span="6">
-                <el-card shadow="always" style="margin-right:20px">分销订单金额：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">分销订单金额：{{distribution_money}}</el-card>
             </el-col>
             <el-col :span="6">
-                <el-card shadow="always" style="margin-right:20px">分销业绩占比：0%</el-card>
+                <el-card shadow="always" style="margin-right:20px">分销业绩占比：{{distribution_percent}}</el-card>
             </el-col>
             <el-col :span="6">
-                <el-card shadow="always">产生佣金：0</el-card>
+                <el-card shadow="always">产生佣金：{{charges}}</el-card>
             </el-col>
         </el-row>
         <el-row style="margin-top:20px">
             <el-col :span="8">
-                <el-card shadow="always" style="margin-right:20px">圈友订单数：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">圈友订单数：{{circle_count}}</el-card>
             </el-col>
             <el-col :span="8">
-                <el-card shadow="always" style="margin-right:20px">圈友订单金额：0</el-card>
+                <el-card shadow="always" style="margin-right:20px">圈友订单金额：{{circle_money}}</el-card>
             </el-col>
             <el-col :span="8">
-                <el-card shadow="always">圈友订单业绩占比：0</el-card>
+                <el-card shadow="always">圈友订单业绩占比：{{circle_percent}}</el-card>
             </el-col>
         </el-row>
         <div class="infoItem">分销业绩</div>
         <el-table :data="tableData" style="width:100%">
-            <el-table-column prop="date" label="用户名" width="180"></el-table-column>
-            <el-table-column prop="name" label="身份" width="180"></el-table-column>
-            <el-table-column prop="address" label="联系电话"></el-table-column>
-            <el-table-column prop="date" label="销售额" width="180"></el-table-column>
-            <el-table-column prop="name" label="订单数" width="180"></el-table-column>
-            <el-table-column prop="address" label="成交用户数"></el-table-column>
-            <el-table-column prop="date" label="客单价" width="180"></el-table-column>
-            <el-table-column prop="name" label="佣金收入" width="180"></el-table-column>
-            <el-table-column prop="address" label="分享次数"></el-table-column>
-            <el-table-column prop="date" label="分享成交率" width="180"></el-table-column>
-            <el-table-column prop="name" label="操作" width="180">
+            <el-table-column prop="username" label="用户名" width></el-table-column>
+            <el-table-column prop="identity" label="身份" width></el-table-column>
+            <el-table-column prop="mobile" label="联系电话"></el-table-column>
+            <el-table-column prop="sales" label="销售额" width></el-table-column>
+            <el-table-column prop="orders" label="订单数" width></el-table-column>
+            <el-table-column prop="users" label="成交用户数"></el-table-column>
+            <el-table-column prop="customer_price" label="客单价" width></el-table-column>
+            <el-table-column prop="charges" label="佣金收入" width></el-table-column>
+            <el-table-column prop="shares" label="分享次数"></el-table-column>
+            <el-table-column prop="shares_percent" label="分享成交率" width></el-table-column>
+            <el-table-column prop label="操作" width>
                 <template scope="scope">
                     <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button> -->
                     <el-button
                         size="small"
                         type="danger"
-                        @click="handleDel(scope.$index, scope.row)"
+                        @click="handleChange(scope.row.id)"
                     >交换名片</el-button>
                 </template>
             </el-table-column>
@@ -78,10 +78,13 @@
 </template>
 <script>
 import echarts from "echarts";
+import { getOrderStatic, changeCard } from "../../api/api";
+import utils from "@/common/js/util";
+
 export default {
     data() {
         return {
-            value2: "", //操作时间
+            effectiveTime: "", //操作时间
             pickerOptions: {
                 shortcuts: [
                     {
@@ -108,139 +111,84 @@ export default {
                     }
                 ]
             },
-            tableData: [
-                {
-                    date: "2016-05-02",
-                    name: "1",
-                    address: "1 1518 弄"
-                }
-            ],
-            chartLine: {},
-            chartLine2: {},
-            options: [
-                {
-                    value: "选项1",
-                    label: "top10"
-                },
-                {
-                    value: "选项2",
-                    label: "top20"
-                }
-            ],
-            value: ""
+            tableData: [],
+            listLoading: false,
+            order_count: "",
+            order_money: "",
+            distribution_count: "",
+            distribution_money: "",
+            distribution_percent: "",
+            distribution_percent: "",
+            charges: "",
+            circle_count: "",
+            circle_money: "",
+            distribution_percent: "",
+            charges: "",
+            circle_count: "",
+            circle_money: "",
+            circle_percent: ""
         };
     },
     methods: {
-        drawLineChart() {
-            this.chartLine = echarts.init(document.getElementById("chartLine"));
-            this.chartLine.setOption({
-                title: {
-                    text: ""
-                },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: ["订单数", "订单金额"]
-                },
-                grid: {
-                    left: "3%",
-                    right: "4%",
-                    bottom: "3%",
-                    containLabel: true
-                },
-                xAxis: {
-                    type: "category",
-                    boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
-                },
-                yAxis: {
-                    type: "value"
-                },
-                series: [
-                    {
-                        name: "订单数",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "订单金额",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    }
-                ]
-            });
+        onSearch() {
+            this.getOrderStatic();
         },
-        drawLineChart2() {
-            this.chartLine2 = echarts.init(
-                document.getElementById("chartLine2")
-            );
-            this.chartLine2.setOption({
-                title: {
-                    text: ""
-                },
-                tooltip: {
-                    trigger: "axis"
-                },
-                legend: {
-                    data: ["新增会员", "新增分销商"]
-                },
-                grid: {
-                    left: "3%",
-                    right: "4%",
-                    bottom: "3%",
-                    containLabel: true
-                },
-                xAxis: {
-                    type: "category",
-                    boundaryGap: false,
-                    data: [
-                        "周一",
-                        "周二",
-                        "周三",
-                        "周四",
-                        "周五",
-                        "周六",
-                        "周日"
-                    ]
-                },
-                yAxis: {
-                    type: "value"
-                },
-                series: [
-                    {
-                        name: "新增会员",
-                        type: "line",
-                        stack: "总量",
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: "新增分销商",
-                        type: "line",
-                        stack: "总量",
-                        data: [220, 182, 191, 234, 290, 330, 310]
+        handleChange(id){
+            const params = {
+                id
+            }
+            changeCard(params).then(res=>{
+                if(res.data.code ==200){
+                    this.$message({
+                        type:"success",
+                        message:res.data.msg
+                    })
+                }else{
+                    this.$message({
+                        type:"warning",
+                        message:res.data.msg
+                    })
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        getOrderStatic() {
+            let start_time = "";
+            let end_time = "";
+            if (this.effectiveTime) {
+                start_time = utils.formatDate.format(
+                    this.effectiveTime[0],
+                    "yyyy-MM-dd"
+                );
+                end_time = utils.formatDate.format(
+                    this.effectiveTime[1],
+                    "yyyy-MM-dd"
+                );
+            }
+            const params = {
+                start_date:start_time,
+                end_date:end_time
+            }   
+            this.listLoading = true;
+            getOrderStatic(params)
+                .then(res => {
+                    const data = res.data.data.data;
+                    this.tableData = data.list;
+                    for (let prop in data) {
+                        if (this.hasOwnProperty(prop)) {
+                            this[prop] = data[prop];
+                        }
                     }
-                ]
-            });
+                    this.listLoading = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     },
     mounted() {
-        this.drawLineChart();
-        this.drawLineChart2();
-    },
-    updated() {
-        this.drawLineChart();
-        this.drawLineChart2();
+        this.getOrderStatic();
     }
 };
 </script>

@@ -448,10 +448,6 @@ export default {
                 isreward: this.isreward,
                 reward: this.reward
             };
-            // const urlType = submitAddgoods
-            // if(this.$route.query.id){
-            //     urlType = editGoods
-            // }
             submitAddgoods(
                 { data: JSON.stringify(params) },
                 {
@@ -507,6 +503,9 @@ export default {
             getEditGoods(params)
                 .then(res => {
                     const data = res.data.data;
+                    // for(item in data){
+                        
+                    // }
                     this.goods_category_options = data.goods_category;
                     this.shop_goods_category_options = data.shop_goods_category;
                     this.goods_category = data.goods.goods_category;
@@ -545,7 +544,7 @@ export default {
     components: {
         SkuWrap: resolve => {
             return require(["@/components/sku"], resolve);
-        }
+        },
     },
     created() {
         this.getQiniuToken();
