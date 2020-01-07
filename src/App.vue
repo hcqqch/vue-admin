@@ -83,6 +83,9 @@ body {
 .el-table .cell{
 	text-align: center;
 }
+li.el-upload-list__item{
+    display: none !important;
+}
 // .el-menu{
 // 	background-color: #EEF2FE !important;
 // }

@@ -732,7 +732,6 @@ export default {
     }
 };
 </script>
-
 <style lang="scss">
 * {
     list-style: none;

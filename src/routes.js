@@ -116,11 +116,11 @@ let routes = [{
     {
         path: '/',
         component: Home,
-        name: '资产管理',
+        name: '店铺收益',
         iconCls: 'el-icon-my-money',
         children: [
-            { path: '/account', component: Account, name: '账户总览' },
-            { path: '/accountdetail', component: AccountDetail, name: '账单明细' },
+            { path: '/account', component: Account, name: '收益总览' },
+            { path: '/accountdetail', component: AccountDetail, name: '收益明细' },
         ]
     },
     {

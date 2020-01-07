@@ -5,9 +5,9 @@
         <el-row :gutter="12">
             <el-col :span="8">
                 <el-card class="larger" shadow="always">
-                    可用店铺余额：
+                    已结算额：
                     <span>{{money}}</span>元
-                    <el-button type="text" @click="withDraw">提现</el-button>
+                    <!-- <el-button type="text" @click="withDraw">提现</el-button> -->
                 </el-card>
             </el-col>
             <el-col :span="8">
